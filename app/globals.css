@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafa;
+  --foreground: #09090b;
 }
 
 @theme inline {
@@ -14,13 +14,232 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #09090b;
+    --foreground: #fafafa;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
 }
+
+/* Custom Leaflet styling overrides */
+
+.leaflet-container {
+  font-family: inherit !important;
+  background: #f4f4f5 !important;
+}
+
+.dark .leaflet-container {
+  background: #18181b !important;
+}
+
+/* Custom Marker Styles */
+.custom-marker {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.marker-pin-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  position: absolute;
+  bottom: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  border: 2px solid white;
+}
+
+.custom-marker:hover .marker-pin-wrapper {
+  transform: rotate(-45deg) scale(1.15) translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.marker-icon-inner {
+  transform: rotate(45deg);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.marker-pulse-ring {
+  position: absolute;
+  width: 14px;
+  height: 7px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  bottom: -3px;
+  left: calc(50% - 7px);
+  z-index: -1;
+  animation: marker-shadow-pulse 2s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes marker-shadow-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.15;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+}
+
+/* Glassmorphic Popups */
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  color: #09090b !important;
+  padding: 2px !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: rgba(24, 24, 27, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+}
+
+.dark .leaflet-popup-tip {
+  background: rgba(24, 24, 27, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 14px !important;
+  line-height: 1.5 !important;
+  font-size: 0.875rem !important;
+}
+
+.leaflet-popup-close-button {
+  top: 6px !important;
+  right: 6px !important;
+  color: #71717a !important;
+  font-size: 14px !important;
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-popup-close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 50% !important;
+  color: #18181b !important;
+}
+
+.dark .leaflet-popup-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #fafafa !important;
+}
+
+/* Glassmorphic Controls */
+.leaflet-bar {
+  border: none !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.leaflet-bar a {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  color: #27272a !important;
+  transition: all 0.2s ease;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaflet-bar a:hover {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+}
+
+.dark .leaflet-bar a {
+  background-color: rgba(24, 24, 27, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: #e4e4e7 !important;
+}
+
+.dark .leaflet-bar a:hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+/* Smooth active drawing styles */
+.measuring-line {
+  stroke-dasharray: 6, 6;
+  animation: dash 20s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+/* Scrollbars for beautiful directories */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 113, 122, 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.15);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(161, 161, 170, 0.35);
+}
+
