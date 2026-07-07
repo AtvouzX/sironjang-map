@@ -9,7 +9,7 @@ import {
   Leaf, HeartPulse, Bus, Tent, Footprints, CupSoda,
   Ruler, MapPin, X, Layers, Search,
   RefreshCw, Navigation, Menu, ChevronRight, ChevronLeft, Map as MapIcon,
-  Info, ChevronDown
+  Info, ChevronDown, Sun, Moon
 } from 'lucide-react';
 import {
   MAP_CATEGORIES,
@@ -99,10 +99,33 @@ export default function InteractiveMap() {
   const [measuredPoints, setMeasuredPoints] = useState<L.LatLng[]>([]);
   const [measuredDistance, setMeasuredDistance] = useState(0);
 
+  // Theme settings
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
   // Map settings
   const [baseLayer, setBaseLayer] = useState<'street' | 'dark' | 'satellite'>('street');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false); // Mobile drawer view
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      setBaseLayer(savedTheme === 'dark' ? 'dark' : 'street');
+    }
+  }, []);
+
+  // Update theme class and save to localStorage
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   // Map reference holders
   const mapRef = useRef<L.Map | null>(null);
@@ -228,7 +251,7 @@ export default function InteractiveMap() {
       const matchCategory = selectedCategories.includes(poi.category);
       const matchSearch = searchQuery
         ? poi.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          poi.description.toLowerCase().includes(searchQuery.toLowerCase())
+        poi.description.toLowerCase().includes(searchQuery.toLowerCase())
         : true;
       return matchCategory && matchSearch;
     });
@@ -253,9 +276,9 @@ export default function InteractiveMap() {
       fillOpacity: 0.04,
       dashArray: '3, 6'
     }).addTo(overlaysGroup);
-    
-    boundaryPolygon.bindTooltip('Batas Administratif Kel. Pakintelan (OSM)', { sticky: true });
-    
+
+    // boundaryPolygon.bindTooltip('Batas Administratif Kel. Pakintelan (OSM)', { sticky: true });
+
     // Auto fit bounds on initial load of map to showcase boundary
     if (BOUNDARY_PAKINTELAN.length > 0 && !hasFitBoundsRef.current) {
       map.fitBounds(boundaryPolygon.getBounds(), { padding: [20, 20], maxZoom: 15 });
@@ -357,8 +380,8 @@ export default function InteractiveMap() {
 
       // Create a nice floating popup showing total distance at the last point
       const lastPoint = measuredPoints[measuredPoints.length - 1];
-      const distStr = measuredDistance < 1000 
-        ? `${measuredDistance.toFixed(1)} m` 
+      const distStr = measuredDistance < 1000
+        ? `${measuredDistance.toFixed(1)} m`
         : `${(measuredDistance / 1000).toFixed(2)} km`;
 
       L.popup({ closeButton: false, autoClose: false, closeOnClick: false })
@@ -402,7 +425,7 @@ export default function InteractiveMap() {
             <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Kec. Gunungpati, Semarang</p>
           </div>
         </div>
-        <button 
+        <button
           className="md:hidden p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 dark:text-zinc-400"
           onClick={() => setSidebarOpen(false)}
         >
@@ -413,16 +436,16 @@ export default function InteractiveMap() {
       {/* Thematic Indicator Checkbox Selector */}
       <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/55 dark:bg-zinc-900/50">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-450 dark:text-zinc-500">Indikator Tematik</span>
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Indikator Tematik</span>
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => setSelectedCategories(MAP_CATEGORIES.map(c => c.id))}
               className="text-[10px] text-indigo-650 dark:text-indigo-400 hover:underline font-bold"
             >
               Semua
             </button>
             <span className="text-zinc-300 dark:text-zinc-700 text-[10px]">|</span>
-            <button 
+            <button
               onClick={() => setSelectedCategories([])}
               className="text-[10px] text-zinc-500 hover:underline font-bold"
             >
@@ -438,23 +461,22 @@ export default function InteractiveMap() {
               <button
                 key={cat.id}
                 onClick={() => toggleCategory(cat.id)}
-                className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold border text-left transition-all ${
-                  isChecked
-                    ? 'bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-md shadow-black/5 scale-[1.02]'
-                    : 'bg-white dark:bg-zinc-850 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-zinc-200 dark:border-zinc-800 text-zinc-650 dark:text-zinc-400'
-                }`}
+                className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold border text-left transition-all ${isChecked
+                  ? 'bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-md shadow-black/5 scale-[1.02]'
+                  : 'bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400'
+                  }`}
               >
-                <div 
+                <div
                   className="w-4 h-4 rounded border flex items-center justify-center transition-colors"
-                  style={{ 
-                    borderColor: isChecked ? 'transparent' : cat.markerColor, 
-                    backgroundColor: isChecked ? (baseLayer === 'dark' ? '#000' : '#fff') : 'transparent' 
+                  style={{
+                    borderColor: isChecked ? 'transparent' : cat.markerColor,
+                    backgroundColor: isChecked ? (theme === 'dark' ? '#000' : '#fff') : 'transparent'
                   }}
                 >
                   {isChecked && (
-                    <span 
-                      className="w-2 h-2 rounded-sm" 
-                      style={{ backgroundColor: cat.markerColor }} 
+                    <span
+                      className="w-2 h-2 rounded-sm"
+                      style={{ backgroundColor: cat.markerColor }}
                     />
                   )}
                 </div>
@@ -474,7 +496,7 @@ export default function InteractiveMap() {
             if (!cat) return null;
             const Icon = IconComponents[cat.icon] || Compass;
             return (
-              <div key={cat.id} className="p-3 bg-white dark:bg-zinc-850 rounded-2xl border border-zinc-150 dark:border-zinc-800/80 shadow-sm space-y-2 animate-fade-in">
+              <div key={cat.id} className="p-3 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-150 dark:border-zinc-700 shadow-sm space-y-2 animate-fade-in">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.markerColor }} />
@@ -482,10 +504,10 @@ export default function InteractiveMap() {
                   </div>
                   <Icon className="w-3.5 h-3.5 text-zinc-400" />
                 </div>
-                <p className="text-[11px] text-zinc-550 dark:text-zinc-400 leading-relaxed">
+                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
                   {cat.description}
                 </p>
-                
+
                 {/* Stats Grid */}
                 <div className="grid grid-cols-3 gap-1.5 pt-1">
                   {cat.stats.map((stat, i) => (
@@ -510,10 +532,10 @@ export default function InteractiveMap() {
             placeholder="Cari lokasi di tema aktif..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-zinc-100 dark:bg-zinc-950 border border-zinc-200/50 dark:border-zinc-850 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all placeholder-zinc-400"
+            className="w-full pl-9 pr-4 py-2 bg-zinc-100 dark:bg-zinc-950 border border-zinc-200/50 dark:border-zinc-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all placeholder-zinc-400"
           />
           {searchQuery && (
-            <button 
+            <button
               onClick={() => setSearchQuery('')}
               className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white"
             >
@@ -544,13 +566,12 @@ export default function InteractiveMap() {
               <div
                 key={poi.id}
                 onClick={() => handleSelectPOI(poi)}
-                className={`group flex items-start gap-3 p-3 rounded-2xl cursor-pointer border transition-all ${
-                  isSelected
-                    ? 'bg-zinc-100/80 dark:bg-zinc-800/80 border-zinc-350 dark:border-zinc-700 shadow-sm scale-[0.99]'
-                    : 'bg-white dark:bg-zinc-850 border-zinc-150 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/30'
-                }`}
+                className={`group flex items-start gap-3 p-3 rounded-2xl cursor-pointer border transition-all ${isSelected
+                  ? 'bg-zinc-100/80 dark:bg-zinc-800/80 border-zinc-300 dark:border-zinc-700 shadow-sm scale-[0.99]'
+                  : 'bg-white dark:bg-zinc-850 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-700/30'
+                  }`}
               >
-                <div 
+                <div
                   className="p-2.5 rounded-xl text-white mt-0.5 shadow-sm shadow-black/10 group-hover:scale-105 transition-transform"
                   style={{ backgroundColor: poiCategoryConfig.markerColor }}
                 >
@@ -573,27 +594,25 @@ export default function InteractiveMap() {
 
   return (
     <div className="flex flex-col md:flex-row flex-1 h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 relative">
-      
+
       {/* 1A. DESKTOP SIDEBAR (Slide transition with width adjustments to prevent overlapping content) */}
-      <aside className={`hidden md:flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 z-20 ${
-        sidebarOpen ? 'w-[380px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-r-0'
-      }`}>
+      <aside className={`hidden md:flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 z-20 ${sidebarOpen ? 'w-[380px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-r-0'
+        }`}>
         {sidebarContent}
       </aside>
 
       {/* 1B. MOBILE SIDEBAR (Fully overlay fixed translate-x layout) */}
-      <aside className={`md:hidden fixed top-0 left-0 h-full w-full sm:w-[380px] z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-r border-zinc-200 dark:border-zinc-800 flex flex-col transition-transform duration-300 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      <aside className={`md:hidden fixed top-0 left-0 h-full w-full sm:w-[380px] z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-r border-zinc-200 dark:border-zinc-800 flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
         {sidebarContent}
       </aside>
 
       {/* 2. MAIN CONTAINER: Map Canvas & Toolbar */}
       <main className="flex-1 flex flex-col h-full relative overflow-hidden z-10">
-        
+
         {/* TOP FLOATING CONTROLS PANEL */}
         <header className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between gap-3 pointer-events-none">
-          
+
           {/* Collapse/Reopen Sidebar button */}
           <div className="flex items-center gap-2 pointer-events-auto">
             <button
@@ -607,7 +626,7 @@ export default function InteractiveMap() {
             {/* Current Thematic indicator (when sidebar closed) */}
             {!sidebarOpen && (
               <div ref={themeDropdownRef} className="relative pointer-events-auto">
-                <button 
+                <button
                   onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
                   className="px-4 py-2.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl flex items-center gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 transition-all cursor-pointer"
                 >
@@ -618,24 +637,24 @@ export default function InteractiveMap() {
                       selectedCategories.slice(0, 3).map(catId => {
                         const cat = MAP_CATEGORIES.find(c => c.id === catId);
                         return (
-                          <span 
-                            key={catId} 
-                            className="w-2.5 h-2.5 rounded-full border border-white dark:border-zinc-900" 
-                            style={{ backgroundColor: cat?.markerColor || '#ccc' }} 
+                          <span
+                            key={catId}
+                            className="w-2.5 h-2.5 rounded-full border border-white dark:border-zinc-900"
+                            style={{ backgroundColor: cat?.markerColor || '#ccc' }}
                           />
                         );
                       })
                     )}
                   </div>
                   <span className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-200">
-                    {selectedCategories.length === 0 
-                      ? 'Peta Dasar' 
-                      : selectedCategories.length === 1 
-                        ? MAP_CATEGORIES.find(c => c.id === selectedCategories[0])?.name 
+                    {selectedCategories.length === 0
+                      ? 'Peta Dasar'
+                      : selectedCategories.length === 1
+                        ? MAP_CATEGORIES.find(c => c.id === selectedCategories[0])?.name
                         : `${selectedCategories.length} Tema Aktif`
                     }
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-zinc-550" />
+                  <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
                 </button>
 
                 {/* Thematic Indicator Dropdown Menu */}
@@ -643,14 +662,14 @@ export default function InteractiveMap() {
                   <div className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-1 flex justify-between items-center mb-1">
                     <span>Indikator Tematik</span>
                     <div className="flex gap-1.5 font-bold">
-                      <button 
+                      <button
                         onClick={() => setSelectedCategories(MAP_CATEGORIES.map(c => c.id))}
                         className="text-[9px] text-indigo-650 dark:text-indigo-400 hover:underline"
                       >
                         Semua
                       </button>
                       <span className="text-zinc-350 dark:text-zinc-700 text-[9px]">|</span>
-                      <button 
+                      <button
                         onClick={() => setSelectedCategories([])}
                         className="text-[9px] text-zinc-500 hover:underline"
                       >
@@ -666,17 +685,16 @@ export default function InteractiveMap() {
                         <button
                           key={cat.id}
                           onClick={() => toggleCategory(cat.id)}
-                          className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-xl text-xs transition-colors text-left ${
-                            isChecked 
-                              ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold' 
-                              : 'hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-650 dark:text-zinc-400'
-                          }`}
+                          className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-xl text-xs transition-colors text-left ${isChecked
+                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold'
+                            : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                            }`}
                         >
-                          <span 
+                          <span
                             className="w-3.5 h-3.5 rounded flex items-center justify-center border transition-colors"
-                            style={{ 
-                              borderColor: cat.markerColor, 
-                              backgroundColor: isChecked ? cat.markerColor : 'transparent' 
+                            style={{
+                              borderColor: cat.markerColor,
+                              backgroundColor: isChecked ? cat.markerColor : 'transparent'
                             }}
                           >
                             {isChecked && <span className="w-1.5 h-1.5 rounded-sm bg-white dark:bg-zinc-900" />}
@@ -694,23 +712,37 @@ export default function InteractiveMap() {
 
           {/* Interactive Tools Panel */}
           <div className="flex items-center gap-2 pointer-events-auto">
-            
+
             {/* Measuring Tool Toggle */}
             <button
               onClick={() => {
                 setIsMeasuring(!isMeasuring);
                 handleClearMeasure();
               }}
-              className={`p-2.5 rounded-xl border flex items-center justify-center shadow-lg transition-all cursor-pointer ${
-                isMeasuring 
-                  ? 'bg-indigo-600 border-indigo-700 text-white ring-4 ring-indigo-500/20' 
-                  : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850'
-              }`}
+              className={`p-2.5 rounded-xl border flex items-center justify-center shadow-lg transition-all cursor-pointer ${isMeasuring
+                ? 'bg-indigo-600 border-indigo-700 text-white ring-4 ring-indigo-500/20'
+                : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850'
+                }`}
               title="Ukur Jarak Antar Titik"
             >
               <Ruler className="w-4.5 h-4.5" />
             </button>
-            
+
+            {/* Theme Toggle
+            <button
+              onClick={() => {
+                const nextTheme = theme === 'light' ? 'dark' : 'light';
+                setTheme(nextTheme);
+                if (baseLayer !== 'satellite') {
+                  setBaseLayer(nextTheme === 'dark' ? 'dark' : 'street');
+                }
+              }}
+              className="p-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 flex items-center justify-center cursor-pointer transition-all"
+              title={theme === 'light' ? 'Ubah ke Tema Gelap' : 'Ubah ke Tema Terang'}
+            >
+              {theme === 'light' ? <Moon className="w-4.5 h-4.5" /> : <Sun className="w-4.5 h-4.5" />}
+            </button> */}
+
             {/* Layer style selector */}
             <div ref={layersDropdownRef} className="relative">
               <button
@@ -720,34 +752,34 @@ export default function InteractiveMap() {
               >
                 <Layers className="w-4.5 h-4.5" />
               </button>
-              
+
               <div className={`absolute right-0 top-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 w-36 flex-col space-y-1 transition-all z-50 ${layersDropdownOpen ? 'flex' : 'hidden'}`}>
                 <button
                   onClick={() => {
                     setBaseLayer('street');
                     setLayersDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'street' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-650 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-650 dark:text-zinc-400'}`}
+                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'street' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}
                 >
                   Peta Jalan
                 </button>
-                <button
+                {/* <button
                   onClick={() => {
                     setBaseLayer('dark');
                     setLayersDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'dark' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-650 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-650 dark:text-zinc-400'}`}
+                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'dark' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-660 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}
                 >
                   Tema Gelap
-                </button>
+                </button> */}
                 <button
                   onClick={() => {
                     setBaseLayer('satellite');
                     setLayersDropdownOpen(false);
                   }}
-                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'satellite' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-650 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-650 dark:text-zinc-400'}`}
+                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'satellite' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}
                 >
-                  Satelit
+                  Peta Satelit
                 </button>
               </div>
             </div>
@@ -761,7 +793,7 @@ export default function InteractiveMap() {
             <Ruler className="w-4 h-4" />
             <span>Mode Ukur Aktif: Klik beberapa titik di peta.</span>
             {measuredPoints.length > 0 && (
-              <button 
+              <button
                 onClick={handleClearMeasure}
                 className="bg-white/20 hover:bg-white/35 rounded-full p-1 transition-colors cursor-pointer"
                 title="Reset Ukuran"
@@ -773,9 +805,9 @@ export default function InteractiveMap() {
         )}
 
         {/* THE LEAFLET MAP ELEMENT CONTAINER */}
-        <div 
-          ref={mapContainerRef} 
-          className="flex-1 w-full h-full outline-none z-10" 
+        <div
+          ref={mapContainerRef}
+          className="flex-1 w-full h-full outline-none z-10"
         />
 
         {/* FLOATING MEASUREMENT STATS OVERLAY CARD */}
@@ -808,7 +840,7 @@ export default function InteractiveMap() {
         {selectedPOI && sidebarOpen && (
           <div className="hidden lg:flex absolute top-4 right-4 bottom-4 w-96 z-40 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl flex-col overflow-hidden animate-slide-in">
             {/* Header image details */}
-            <div 
+            <div
               className="h-36 w-full relative flex items-end p-4 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
               style={{
                 background: `linear-gradient(to top, rgba(9, 9, 11, 0.95), rgba(9, 9, 11, 0.2)), url('/api/placeholder/400/200') center/cover`
@@ -832,7 +864,7 @@ export default function InteractiveMap() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Deskripsi</span>
-                <p className="mt-1 text-zinc-650 dark:text-zinc-300 leading-relaxed font-semibold">
+                <p className="mt-1 text-zinc-600 dark:text-zinc-300 leading-relaxed font-semibold">
                   {selectedPOI.description}
                 </p>
               </div>
@@ -842,7 +874,7 @@ export default function InteractiveMap() {
                 <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-2">Informasi Detail</span>
                 <div className="space-y-2">
                   {Object.entries(selectedPOI.details).map(([key, val]) => (
-                    <div key={key} className="bg-zinc-50 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-850 flex flex-col">
+                    <div key={key} className="bg-zinc-50 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 flex flex-col">
                       <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase">{key}</span>
                       <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5 leading-relaxed">{val}</span>
                     </div>
@@ -876,7 +908,7 @@ export default function InteractiveMap() {
             <div className="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full cursor-pointer" />
           </div>
 
-          <div className="p-4 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-850">
+          <div className="p-4 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800">
             <div>
               <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 uppercase tracking-widest border border-indigo-200/20">
                 {selectedPOI.category}
@@ -894,7 +926,7 @@ export default function InteractiveMap() {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             <div>
               <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Deskripsi</span>
-              <p className="mt-1 text-xs text-zinc-650 dark:text-zinc-300 leading-relaxed font-semibold">
+              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-semibold">
                 {selectedPOI.description}
               </p>
             </div>
@@ -903,7 +935,7 @@ export default function InteractiveMap() {
               <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400 block mb-2">Informasi Detail</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {Object.entries(selectedPOI.details).map(([key, val]) => (
-                  <div key={key} className="bg-zinc-50 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-850 flex flex-col">
+                  <div key={key} className="bg-zinc-50 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 flex flex-col">
                     <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase">{key}</span>
                     <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5 leading-relaxed">{val}</span>
                   </div>
