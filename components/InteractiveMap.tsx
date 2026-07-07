@@ -91,12 +91,15 @@ export default function InteractiveMap() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false); // Mobile drawer view
 
-  // Load theme from localStorage on mount
+  // Load theme from localStorage on mount and adjust sidebar for mobile screens
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {
       setTheme(savedTheme);
       setBaseLayer(savedTheme === 'dark' ? 'dark' : 'street');
+    }
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
     }
   }, []);
 
@@ -320,7 +323,7 @@ export default function InteractiveMap() {
           <h4 class="font-bold text-base text-zinc-900 dark:text-white leading-tight mb-1">${poi.name}</h4>
           <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2">${poi.description}</p>
           <button class="w-full text-center text-xs py-1.5 px-3 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white font-medium rounded-lg transition-colors popup-action-btn">
-            Lihat Informasi Detail
+            Detail
           </button>
         </div>
       `;
@@ -329,8 +332,10 @@ export default function InteractiveMap() {
 
       // Click to focus and show sidebar details
       marker.on('click', () => {
-        setSelectedPOI(poi);
-        setDrawerOpen(true); // Open drawer on mobile
+        const isMobile = window.innerWidth < 1024;
+        if (!isMobile) {
+          setSelectedPOI(poi);
+        }
         map.setView([poi.lat - 0.001, poi.lng], 16); // Center slightly lower for popup spacing
       });
 
@@ -414,7 +419,7 @@ export default function InteractiveMap() {
 
   return (
     <div className="flex flex-col md:flex-row flex-1 h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 relative">
-      
+
       {/* Sidebar Navigation */}
       <Sidebar
         sidebarOpen={sidebarOpen}
@@ -432,7 +437,7 @@ export default function InteractiveMap() {
 
       {/* Main Container */}
       <main className="flex-1 flex flex-col h-full relative overflow-hidden z-10">
-        
+
         {/* Floating Controls Header */}
         <HeaderControls
           sidebarOpen={sidebarOpen}
@@ -461,7 +466,7 @@ export default function InteractiveMap() {
             <Ruler className="w-4 h-4" />
             <span>Mode Ukur Aktif: Klik beberapa titik di peta.</span>
             {measuredPoints.length > 0 && (
-              <button 
+              <button
                 onClick={handleClearMeasure}
                 className="bg-white/20 hover:bg-white/35 rounded-full p-1 transition-colors cursor-pointer"
                 title="Reset Ukuran"
@@ -473,9 +478,9 @@ export default function InteractiveMap() {
         )}
 
         {/* THE LEAFLET MAP ELEMENT CONTAINER */}
-        <div 
-          ref={mapContainerRef} 
-          className="flex-1 w-full h-full outline-none z-10" 
+        <div
+          ref={mapContainerRef}
+          className="flex-1 w-full h-full outline-none z-10"
         />
 
         {/* FLOATING MEASUREMENT STATS OVERLAY CARD */}
