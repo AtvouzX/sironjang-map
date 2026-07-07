@@ -33,8 +33,17 @@ body {
   background: #f4f4f5 !important;
 }
 
+.leaflet-container:focus {
+  outline: none !important;
+}
+
 .dark .leaflet-container {
   background: #18181b !important;
+}
+
+/* Remove default browser focus outlines on click/tap while keeping keyboard focus accessibility */
+:focus:not(:focus-visible) {
+  outline: none !important;
 }
 
 /* Custom Marker Styles */
