@@ -3,34 +3,18 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {
-  Building2, Store, Milk, Sprout, School, ShieldAlert, Compass,
-  Users, Palette, Utensils, ShoppingBag, Egg, Shield, Trees,
-  Leaf, HeartPulse, Bus, Tent, Footprints, CupSoda,
-  Ruler, MapPin, X, Layers, Search,
-  RefreshCw, Navigation, Menu, ChevronRight, ChevronLeft, Map as MapIcon,
-  Info, ChevronDown, Sun, Moon
-} from 'lucide-react';
+import { Compass, Ruler, RefreshCw } from 'lucide-react';
 import {
   MAP_CATEGORIES,
   MAP_POIS,
   BOUNDARY_PAKINTELAN,
-  ZONE_UMKM,
-  ZONE_PETERNAKAN,
-  ZONE_PERTANIAN,
-  EVACUATION_ROUTE_1,
-  EVACUATION_ROUTE_2,
-  TOURISM_TRAIL,
-  MapPOI,
-  MapCategory
+  MapPOI
 } from '@/data/mapData';
+import Sidebar from './map/Sidebar';
+import HeaderControls from './map/HeaderControls';
+import DetailsCard from './map/DetailsCard';
+import DetailsDrawer from './map/DetailsDrawer';
 
-// Map icon lookup dictionary for rendering in React UI
-const IconComponents: { [key: string]: React.ComponentType<any> } = {
-  Building2, Store, Milk, Sprout, School, ShieldAlert, Compass,
-  Users, Palette, Utensils, ShoppingBag, Egg, Shield, Trees,
-  Leaf, HeartPulse, Bus, Tent, Footprints, CupSoda
-};
 
 // SVG paths for Leaflet HTML Markers (matching Lucide icon designs)
 const getIconSvg = (iconName: string) => {
@@ -277,6 +261,23 @@ export default function InteractiveMap() {
       dashArray: '3, 6'
     }).addTo(overlaysGroup);
 
+    // World coordinates covering the entire globe for the mask
+    const worldCoords = [
+      [-90, -180],
+      [-90, 180],
+      [90, 180],
+      [90, -180]
+    ];
+
+    // Render mask to dim (unfocus) everything outside the Pakintelan boundary
+    L.polygon([worldCoords, BOUNDARY_PAKINTELAN] as L.LatLngExpression[][], {
+      color: 'transparent',
+      weight: 0,
+      fillColor: theme === 'dark' ? '#09090b' : '#0f172a',
+      fillOpacity: theme === 'dark' ? 0.65 : 0.45,
+      interactive: false // Allow mouse events to pass through to the map layers beneath
+    }).addTo(overlaysGroup);
+
     // boundaryPolygon.bindTooltip('Batas Administratif Kel. Pakintelan (OSM)', { sticky: true });
 
     // Auto fit bounds on initial load of map to showcase boundary
@@ -411,381 +412,48 @@ export default function InteractiveMap() {
     }
   };
 
-  // Sidebar contents markup (Shared between desktop and mobile layouts)
-  const sidebarContent = (
-    <div className="flex flex-col h-full overflow-hidden select-none">
-      {/* Sidebar Header */}
-      <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl text-indigo-600 dark:text-indigo-400">
-            <MapIcon className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="font-bold text-lg leading-tight tracking-tight">Peta Pakintelan</h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Kec. Gunungpati, Semarang</p>
-          </div>
-        </div>
-        <button
-          className="md:hidden p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 dark:text-zinc-400"
-          onClick={() => setSidebarOpen(false)}
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Thematic Indicator Checkbox Selector */}
-      <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/55 dark:bg-zinc-900/50">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Indikator Tematik</span>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setSelectedCategories(MAP_CATEGORIES.map(c => c.id))}
-              className="text-[10px] text-indigo-650 dark:text-indigo-400 hover:underline font-bold"
-            >
-              Semua
-            </button>
-            <span className="text-zinc-300 dark:text-zinc-700 text-[10px]">|</span>
-            <button
-              onClick={() => setSelectedCategories([])}
-              className="text-[10px] text-zinc-500 hover:underline font-bold"
-            >
-              Bersihkan
-            </button>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          {MAP_CATEGORIES.map(cat => {
-            const Icon = IconComponents[cat.icon] || Compass;
-            const isChecked = selectedCategories.includes(cat.id);
-            return (
-              <button
-                key={cat.id}
-                onClick={() => toggleCategory(cat.id)}
-                className={`flex items-center gap-2 p-2.5 rounded-xl text-xs font-semibold border text-left transition-all ${isChecked
-                  ? 'bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-md shadow-black/5 scale-[1.02]'
-                  : 'bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400'
-                  }`}
-              >
-                <div
-                  className="w-4 h-4 rounded border flex items-center justify-center transition-colors"
-                  style={{
-                    borderColor: isChecked ? 'transparent' : cat.markerColor,
-                    backgroundColor: isChecked ? (theme === 'dark' ? '#000' : '#fff') : 'transparent'
-                  }}
-                >
-                  {isChecked && (
-                    <span
-                      className="w-2 h-2 rounded-sm"
-                      style={{ backgroundColor: cat.markerColor }}
-                    />
-                  )}
-                </div>
-                <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isChecked ? undefined : cat.markerColor }} />
-                <span className="truncate">{cat.name}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Category Context Info for Checked Themes */}
-      {selectedCategories.length > 0 && (
-        <div className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/10 max-h-56 overflow-y-auto p-4 space-y-3 scrollbar-thin">
-          {selectedCategories.map(catId => {
-            const cat = MAP_CATEGORIES.find(c => c.id === catId);
-            if (!cat) return null;
-            const Icon = IconComponents[cat.icon] || Compass;
-            return (
-              <div key={cat.id} className="p-3 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-150 dark:border-zinc-700 shadow-sm space-y-2 animate-fade-in">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.markerColor }} />
-                    <h3 className="font-bold text-xs">{cat.name}</h3>
-                  </div>
-                  <Icon className="w-3.5 h-3.5 text-zinc-400" />
-                </div>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                  {cat.description}
-                </p>
-
-                {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-1.5 pt-1">
-                  {cat.stats.map((stat, i) => (
-                    <div key={i} className="p-1.5 bg-zinc-50 dark:bg-zinc-950/40 rounded-xl border border-zinc-100 dark:border-zinc-800 text-center">
-                      <span className="block text-[8px] text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-bold truncate">{stat.label}</span>
-                      <span className="block text-[10px] font-extrabold mt-0.5 truncate">{stat.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Search POIs */}
-      <div className="p-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
-          <input
-            type="text"
-            placeholder="Cari lokasi di tema aktif..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-zinc-100 dark:bg-zinc-950 border border-zinc-200/50 dark:border-zinc-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all placeholder-zinc-400"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* POIs Directory List */}
-      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1.5">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1.5 mb-1 flex items-center justify-between">
-          <span>Daftar Lokasi</span>
-          <span>{filteredPOIs.length} Lokasi</span>
-        </div>
-
-        {filteredPOIs.length === 0 ? (
-          <div className="p-8 text-center bg-zinc-50 dark:bg-zinc-950/20 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
-            <Info className="w-6.5 h-6.5 mx-auto mb-2 text-zinc-400" />
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">Tidak ada lokasi ditemukan</p>
-          </div>
-        ) : (
-          filteredPOIs.map(poi => {
-            const PoiIcon = IconComponents[poi.icon] || Compass;
-            const isSelected = selectedPOI?.id === poi.id;
-            const poiCategoryConfig = MAP_CATEGORIES.find(c => c.id === poi.category) || MAP_CATEGORIES[0];
-            return (
-              <div
-                key={poi.id}
-                onClick={() => handleSelectPOI(poi)}
-                className={`group flex items-start gap-3 p-3 rounded-2xl cursor-pointer border transition-all ${isSelected
-                  ? 'bg-zinc-100/80 dark:bg-zinc-800/80 border-zinc-300 dark:border-zinc-700 shadow-sm scale-[0.99]'
-                  : 'bg-white dark:bg-zinc-850 border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-700/30'
-                  }`}
-              >
-                <div
-                  className="p-2.5 rounded-xl text-white mt-0.5 shadow-sm shadow-black/10 group-hover:scale-105 transition-transform"
-                  style={{ backgroundColor: poiCategoryConfig.markerColor }}
-                >
-                  <PoiIcon className="w-4 h-4" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-sm truncate leading-tight">{poi.name}</h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-2 leading-relaxed font-medium">
-                    {poi.description}
-                  </p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-zinc-400 self-center group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            );
-          })
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <div className="flex flex-col md:flex-row flex-1 h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 relative">
+      
+      {/* Sidebar Navigation */}
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        selectedCategories={selectedCategories}
+        toggleCategory={toggleCategory}
+        setSelectedCategories={setSelectedCategories}
+        selectedPOI={selectedPOI}
+        handleSelectPOI={handleSelectPOI}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        filteredPOIs={filteredPOIs}
+        theme={theme}
+      />
 
-      {/* 1A. DESKTOP SIDEBAR (Slide transition with width adjustments to prevent overlapping content) */}
-      <aside className={`hidden md:flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transition-all duration-300 z-20 ${sidebarOpen ? 'w-[380px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-r-0'
-        }`}>
-        {sidebarContent}
-      </aside>
-
-      {/* 1B. MOBILE SIDEBAR (Fully overlay fixed translate-x layout) */}
-      <aside className={`md:hidden fixed top-0 left-0 h-full w-full sm:w-[380px] z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-r border-zinc-200 dark:border-zinc-800 flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}>
-        {sidebarContent}
-      </aside>
-
-      {/* 2. MAIN CONTAINER: Map Canvas & Toolbar */}
+      {/* Main Container */}
       <main className="flex-1 flex flex-col h-full relative overflow-hidden z-10">
-
-        {/* TOP FLOATING CONTROLS PANEL */}
-        <header className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between gap-3 pointer-events-none">
-
-          {/* Collapse/Reopen Sidebar button */}
-          <div className="flex items-center gap-2 pointer-events-auto">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-700 dark:text-zinc-200 flex items-center justify-center transition-all cursor-pointer"
-              title="Toggle Sidebar"
-            >
-              {sidebarOpen ? <ChevronLeft className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-
-            {/* Current Thematic indicator (when sidebar closed) */}
-            {!sidebarOpen && (
-              <div ref={themeDropdownRef} className="relative pointer-events-auto">
-                <button
-                  onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
-                  className="px-4 py-2.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl flex items-center gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-850 transition-all cursor-pointer"
-                >
-                  <div className="flex -space-x-1 items-center">
-                    {selectedCategories.length === 0 ? (
-                      <span className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
-                    ) : (
-                      selectedCategories.slice(0, 3).map(catId => {
-                        const cat = MAP_CATEGORIES.find(c => c.id === catId);
-                        return (
-                          <span
-                            key={catId}
-                            className="w-2.5 h-2.5 rounded-full border border-white dark:border-zinc-900"
-                            style={{ backgroundColor: cat?.markerColor || '#ccc' }}
-                          />
-                        );
-                      })
-                    )}
-                  </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-200">
-                    {selectedCategories.length === 0
-                      ? 'Peta Dasar'
-                      : selectedCategories.length === 1
-                        ? MAP_CATEGORIES.find(c => c.id === selectedCategories[0])?.name
-                        : `${selectedCategories.length} Tema Aktif`
-                    }
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
-                </button>
-
-                {/* Thematic Indicator Dropdown Menu */}
-                <div className={`absolute left-0 top-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-3 w-56 flex-col space-y-2 transition-all z-50 ${themeDropdownOpen ? 'flex' : 'hidden'}`}>
-                  <div className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-1 flex justify-between items-center mb-1">
-                    <span>Indikator Tematik</span>
-                    <div className="flex gap-1.5 font-bold">
-                      <button
-                        onClick={() => setSelectedCategories(MAP_CATEGORIES.map(c => c.id))}
-                        className="text-[9px] text-indigo-650 dark:text-indigo-400 hover:underline"
-                      >
-                        Semua
-                      </button>
-                      <span className="text-zinc-350 dark:text-zinc-700 text-[9px]">|</span>
-                      <button
-                        onClick={() => setSelectedCategories([])}
-                        className="text-[9px] text-zinc-500 hover:underline"
-                      >
-                        Batal
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    {MAP_CATEGORIES.map(cat => {
-                      const Icon = IconComponents[cat.icon] || Compass;
-                      const isChecked = selectedCategories.includes(cat.id);
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => toggleCategory(cat.id)}
-                          className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-xl text-xs transition-colors text-left ${isChecked
-                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold'
-                            : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                            }`}
-                        >
-                          <span
-                            className="w-3.5 h-3.5 rounded flex items-center justify-center border transition-colors"
-                            style={{
-                              borderColor: cat.markerColor,
-                              backgroundColor: isChecked ? cat.markerColor : 'transparent'
-                            }}
-                          >
-                            {isChecked && <span className="w-1.5 h-1.5 rounded-sm bg-white dark:bg-zinc-900" />}
-                          </span>
-                          <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: cat.markerColor }} />
-                          <span className="truncate">{cat.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Interactive Tools Panel */}
-          <div className="flex items-center gap-2 pointer-events-auto">
-
-            {/* Measuring Tool Toggle */}
-            <button
-              onClick={() => {
-                setIsMeasuring(!isMeasuring);
-                handleClearMeasure();
-              }}
-              className={`p-2.5 rounded-xl border flex items-center justify-center shadow-lg transition-all cursor-pointer ${isMeasuring
-                ? 'bg-indigo-600 border-indigo-700 text-white ring-4 ring-indigo-500/20'
-                : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850'
-                }`}
-              title="Ukur Jarak Antar Titik"
-            >
-              <Ruler className="w-4.5 h-4.5" />
-            </button>
-
-            {/* Theme Toggle
-            <button
-              onClick={() => {
-                const nextTheme = theme === 'light' ? 'dark' : 'light';
-                setTheme(nextTheme);
-                if (baseLayer !== 'satellite') {
-                  setBaseLayer(nextTheme === 'dark' ? 'dark' : 'street');
-                }
-              }}
-              className="p-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 flex items-center justify-center cursor-pointer transition-all"
-              title={theme === 'light' ? 'Ubah ke Tema Gelap' : 'Ubah ke Tema Terang'}
-            >
-              {theme === 'light' ? <Moon className="w-4.5 h-4.5" /> : <Sun className="w-4.5 h-4.5" />}
-            </button> */}
-
-            {/* Layer style selector */}
-            <div ref={layersDropdownRef} className="relative">
-              <button
-                onClick={() => setLayersDropdownOpen(!layersDropdownOpen)}
-                className="p-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 flex items-center justify-center cursor-pointer"
-                title="Pilih Style Peta"
-              >
-                <Layers className="w-4.5 h-4.5" />
-              </button>
-
-              <div className={`absolute right-0 top-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 w-36 flex-col space-y-1 transition-all z-50 ${layersDropdownOpen ? 'flex' : 'hidden'}`}>
-                <button
-                  onClick={() => {
-                    setBaseLayer('street');
-                    setLayersDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'street' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}
-                >
-                  Peta Jalan
-                </button>
-                {/* <button
-                  onClick={() => {
-                    setBaseLayer('dark');
-                    setLayersDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'dark' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-660 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}
-                >
-                  Tema Gelap
-                </button> */}
-                <button
-                  onClick={() => {
-                    setBaseLayer('satellite');
-                    setLayersDropdownOpen(false);
-                  }}
-                  className={`w-full text-left px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${baseLayer === 'satellite' ? 'bg-zinc-100 dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}
-                >
-                  Peta Satelit
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </header>
+        
+        {/* Floating Controls Header */}
+        <HeaderControls
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          selectedCategories={selectedCategories}
+          toggleCategory={toggleCategory}
+          setSelectedCategories={setSelectedCategories}
+          themeDropdownOpen={themeDropdownOpen}
+          setThemeDropdownOpen={setThemeDropdownOpen}
+          layersDropdownOpen={layersDropdownOpen}
+          setLayersDropdownOpen={setLayersDropdownOpen}
+          themeDropdownRef={themeDropdownRef}
+          layersDropdownRef={layersDropdownRef}
+          isMeasuring={isMeasuring}
+          setIsMeasuring={setIsMeasuring}
+          handleClearMeasure={handleClearMeasure}
+          baseLayer={baseLayer}
+          setBaseLayer={setBaseLayer}
+          theme={theme}
+          setTheme={setTheme}
+        />
 
         {/* ACTIVE MEASURING STATUS NOTIFICATION BANNER */}
         {isMeasuring && (
@@ -793,7 +461,7 @@ export default function InteractiveMap() {
             <Ruler className="w-4 h-4" />
             <span>Mode Ukur Aktif: Klik beberapa titik di peta.</span>
             {measuredPoints.length > 0 && (
-              <button
+              <button 
                 onClick={handleClearMeasure}
                 className="bg-white/20 hover:bg-white/35 rounded-full p-1 transition-colors cursor-pointer"
                 title="Reset Ukuran"
@@ -805,9 +473,9 @@ export default function InteractiveMap() {
         )}
 
         {/* THE LEAFLET MAP ELEMENT CONTAINER */}
-        <div
-          ref={mapContainerRef}
-          className="flex-1 w-full h-full outline-none z-10"
+        <div 
+          ref={mapContainerRef} 
+          className="flex-1 w-full h-full outline-none z-10" 
         />
 
         {/* FLOATING MEASUREMENT STATS OVERLAY CARD */}
@@ -836,127 +504,22 @@ export default function InteractiveMap() {
           </div>
         )}
 
-        {/* 3. DETAILS CARD (DESKTOP): Floating Right Sidebar */}
-        {selectedPOI && sidebarOpen && (
-          <div className="hidden lg:flex absolute top-4 right-4 bottom-4 w-96 z-40 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl flex-col overflow-hidden animate-slide-in">
-            {/* Header image details */}
-            <div
-              className="h-36 w-full relative flex items-end p-4 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
-              style={{
-                background: `linear-gradient(to top, rgba(9, 9, 11, 0.95), rgba(9, 9, 11, 0.2)), url('/api/placeholder/400/200') center/cover`
-              }}
-            >
-              <div className="text-white z-10 w-full">
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white/20 uppercase tracking-widest backdrop-blur-sm border border-white/20">
-                  {selectedPOI.category}
-                </span>
-                <h2 className="font-extrabold text-lg mt-1 leading-snug drop-shadow-sm truncate">{selectedPOI.name}</h2>
-              </div>
-              <button
-                onClick={() => setSelectedPOI(null)}
-                className="absolute top-3 right-3 p-1.5 bg-black/40 hover:bg-black/60 rounded-full text-white border border-white/10 transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Description & Details Info */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Deskripsi</span>
-                <p className="mt-1 text-zinc-600 dark:text-zinc-300 leading-relaxed font-semibold">
-                  {selectedPOI.description}
-                </p>
-              </div>
-
-              {/* Attributes fields rendering */}
-              <div className="border-t border-zinc-150 dark:border-zinc-800 pt-3">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block mb-2">Informasi Detail</span>
-                <div className="space-y-2">
-                  {Object.entries(selectedPOI.details).map(([key, val]) => (
-                    <div key={key} className="bg-zinc-50 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 flex flex-col">
-                      <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase">{key}</span>
-                      <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5 leading-relaxed">{val}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* CTA action buttons footer */}
-            <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex">
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 py-3 px-4 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-2xl flex items-center justify-center gap-2 text-xs transition-colors shadow-lg shadow-black/5 cursor-pointer"
-              >
-                <Navigation className="w-4.5 h-4.5" />
-                Petunjuk Arah (Navigasi)
-              </a>
-            </div>
-          </div>
-        )}
+        {/* Desktop floating details card */}
+        <DetailsCard
+          selectedPOI={selectedPOI}
+          setSelectedPOI={setSelectedPOI}
+          sidebarOpen={sidebarOpen}
+        />
 
       </main>
 
-      {/* 4. DETAILS DRAWER (MOBILE): Bottom Slidable Sheet Panel */}
-      {selectedPOI && (
-        <div className={`lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 rounded-t-[2.5rem] shadow-2xl transition-transform duration-300 max-h-[75vh] flex flex-col ${drawerOpen ? 'translate-y-0' : 'translate-y-full'}`}>
-          {/* Drag handle area */}
-          <div className="w-full flex justify-center py-3" onClick={() => setDrawerOpen(false)}>
-            <div className="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full cursor-pointer" />
-          </div>
-
-          <div className="p-4 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800">
-            <div>
-              <span className="px-2 py-0.5 rounded-full text-[8px] font-bold bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 uppercase tracking-widest border border-indigo-200/20">
-                {selectedPOI.category}
-              </span>
-              <h2 className="font-extrabold text-base mt-1 text-zinc-900 dark:text-white leading-tight">{selectedPOI.name}</h2>
-            </div>
-            <button
-              onClick={() => setSelectedPOI(null)}
-              className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-500 dark:text-zinc-400 cursor-pointer"
-            >
-              <X className="w-4.5 h-4.5" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            <div>
-              <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Deskripsi</span>
-              <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-semibold">
-                {selectedPOI.description}
-              </p>
-            </div>
-
-            <div className="border-t border-zinc-100 dark:border-zinc-800 pt-3">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400 block mb-2">Informasi Detail</span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {Object.entries(selectedPOI.details).map(([key, val]) => (
-                  <div key={key} className="bg-zinc-50 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 flex flex-col">
-                    <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase">{key}</span>
-                    <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5 leading-relaxed">{val}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex pb-6">
-            <a
-              href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
-              target="_blank"
-              rel="noreferrer"
-              className="flex-1 py-3 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-900 font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors cursor-pointer"
-            >
-              <Navigation className="w-4 h-4" />
-              Petunjuk Arah (Navigasi)
-            </a>
-          </div>
-        </div>
-      )}
+      {/* Mobile bottom details drawer */}
+      <DetailsDrawer
+        selectedPOI={selectedPOI}
+        setSelectedPOI={setSelectedPOI}
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+      />
 
     </div>
   );
