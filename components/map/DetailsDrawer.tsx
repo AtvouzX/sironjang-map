@@ -1,7 +1,10 @@
 'use client';
 
 import React from 'react';
-import { X, Navigation, Edit2, Trash2 } from 'lucide-react';
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
+import NavigationOutlined from '@mui/icons-material/NavigationOutlined';
+import EditOutlined from '@mui/icons-material/EditOutlined';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import { MapPOI } from '@/data/mapData';
 
 interface DetailsDrawerProps {
@@ -41,9 +44,9 @@ export default function DetailsDrawer({
         </div>
         <button
           onClick={() => setSelectedPOI(null)}
-          className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-550 dark:text-zinc-400 cursor-pointer transition-colors"
+          className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full text-zinc-550 dark:text-zinc-400 cursor-pointer transition-colors flex items-center justify-center"
         >
-          <X className="w-4.5 h-4.5" />
+          <CloseOutlined className="w-4.5 h-4.5" />
         </button>
       </div>
 
@@ -76,9 +79,9 @@ export default function DetailsDrawer({
           href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
           target="_blank"
           rel="noreferrer"
-          className="w-full py-3 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors cursor-pointer"
+          className="w-full py-3 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer"
         >
-          <Navigation className="w-4 h-4" />
+          <NavigationOutlined className="w-4 h-4" />
           Petunjuk Arah (Navigasi)
         </a>
 
@@ -90,9 +93,9 @@ export default function DetailsDrawer({
                 onEditPOI(selectedPOI);
                 setDrawerOpen(false);
               }}
-              className="py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="py-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-bold text-zinc-705 dark:text-zinc-300 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Edit2 className="w-3.5 h-3.5" />
+              <EditOutlined className="w-3.5 h-3.5" />
               Ubah
             </button>
             <button
@@ -105,7 +108,7 @@ export default function DetailsDrawer({
               }}
               className="py-2.5 border border-red-200/50 hover:border-red-500/50 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold text-red-500 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <DeleteOutlined className="w-3.5 h-3.5" />
               Hapus
             </button>
           </div>

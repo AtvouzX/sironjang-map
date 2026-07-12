@@ -2,8 +2,13 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { Compass, Ruler, RefreshCw, MapPin, Layers } from 'lucide-react';
+import SquareFootOutlined from '@mui/icons-material/SquareFootOutlined';
+import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined';
+import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
+import LayersOutlined from '@mui/icons-material/LayersOutlined';
+
+
+
 import {
   BOUNDARY_PAKINTELAN,
   DEFAULT_CATEGORIES,
@@ -38,27 +43,32 @@ if (typeof window !== 'undefined') {
 // SVG paths for Leaflet HTML Markers (matching Lucide icon designs)
 const getIconSvg = (iconName: string) => {
   const paths: { [key: string]: string } = {
-    Building2: `<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>`,
-    Users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
-    Store: `<path d="m2 7 4.41-3.67A2 2 0 0 1 7.68 3h8.64a2 2 0 0 1 1.27.33L22 7"/><path d="M9 12H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-4"/><path d="M12 12v10"/><path d="M12 7v5"/>`,
-    Palette: `<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.63-.77 1.63-1.7 0-.45-.18-.85-.46-1.2-.29-.34-.47-.78-.47-1.27 0-1.1 1-2 2.1-2h1.9c4.27 0 7.9-3.26 7.9-7.58C22 5.82 17.57 2 12 2z"/>`,
-    Utensils: `<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>`,
-    ShoppingBag: `<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>`,
-    Milk: `<path d="M8 2h8"/><path d="M9 2v2.78c0 .88-.39 1.72-1.07 2.3l-2.73 2.34C4.45 10.14 4 11.23 4 12.38V20a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.62c0-1.15-.45-2.24-1.2-2.96l-2.73-2.34A3.5 3.5 0 0 1 15 4.78V2"/><path d="M6 17h12"/><path d="M6 12h12"/>`,
-    Egg: `<path d="M12 22a8 8 0 0 0 8-8c0-5.5-3.5-12-8-12S4 8.5 4 14a8 8 0 0 0 8 8Z"/>`,
-    Shield: `<path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8.24-2.18a1 1 0 0 1 .48 0l8.24 2.18A1 1 0 0 1 20 6z"/>`,
-    Trees: `<path d="M10 10v.2A3 3 0 0 1 8.9 16H4.1A3 3 0 0 1 3 10.2V10a4 4 0 0 1 7.7-1.5 3 3 0 0 1 3.5 4.5A3.9 3.9 0 0 1 10 10z"/><path d="M18 14v.2a3 3 0 0 1-1.1 5.8h-4.8a3 3 0 0 1-1.1-5.8v-.2a4 4 0 0 1 7.7-1.5 3 3 0 0 1 3.5 4.5A3.9 3.9 0 0 1 18 14z"/><path d="M7 16v6"/><path d="M15 19v3"/>`,
-    Sprout: `<path d="M7 20h10"/><path d="M10 20c5.5-2.5 7-7.5 7-12"/><path d="M13 6c-3.5 1-6.5 4.5-6.5 9c0 .7.1 1.3.2 2"/><path d="M9 10c-1.5-1.5-2.5-4-2-6.5C8 4.5 9 6.5 9 10z"/>`,
-    Leaf: `<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-13.9.2"/><path d="M9 22v-4h4"/>`,
-    School: `<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>`,
-    Compass: `<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>`,
-    HeartPulse: `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-3 2 6 1.5-3h3.16"/>`,
-    Bus: `<path d="M8 6v6"/><path d="M15 6v6"/><rect width="16" height="12" x="4" y="4" rx="2"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/><path d="M10 16H8v-2h2Z"/><path d="M16 16h-2v-2h2Z"/>`,
-    ShieldAlert: `<path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8.24-2.18a1 1 0 0 1 .48 0l8.24 2.18A1 1 0 0 1 20 6z"/><path d="M12 8v4"/><path d="M12 16h.01"/>`,
-    Tent: `<path d="M19 21 12 4 5 21"/><path d="M12 4v17"/><path d="m10 14 2-3 2 3"/><path d="M12 11h.01"/><path d="M2 21h20"/>`,
-    Footprints: `<path d="M4 16v-2.38C4 11.5 5.88 9.85 6 7.07l.09-1.76A1.4 1.4 0 0 1 7.5 4c.8 0 1.43.6 1.49 1.4l.17 2.18C9.33 10.15 8.1 11.8 8.1 13.92V16"/><path d="M12 18v-2.38c0-2.12 1.88-3.77 2-6.55l.09-1.76A1.4 1.4 0 0 1 15.5 6c.8 0 1.43.6 1.49 1.4l.17 2.18c.17 2.57-1.06 4.22-1.06 6.34V18"/><path d="M16 20h.01"/><path d="M8 18h.01"/>`,
-    CupSoda: `<path d="m6 8 1.75 12.28a2 2 0 0 0 2 1.72h4.54a2 2 0 0 0 2-1.72L18 8"/><path d="M5 8h14"/><path d="M7 15h10"/><path d="m15 8-2-6h-2L9 8"/>`,
-    MapPin: `<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>`
+    Building2: `<path d="M12 7V3H2v18h20V7zm-2 12H4v-2h6zm0-4H4v-2h6zm0-4H4V9h6zm0-4H4V5h6zm10 12h-8V9h8zm0-10h-8V5h8zm-2 5h-4v2h4zm0 4h-4v2h4z"/>`,
+    Store: `<path d="M4 4h16v2H4zm16 11H4v2h16zM2 20h20v2H2zM20 8H4c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2m0 5H4v-3h16z"/>`,
+    Milk: `<path d="M15.5 12c.83 0 1.5-.67 1.5-1.5S16.33 9 15.5 9h-7C7.67 9 7 9.67 7 10.5S7.67 12 8.5 12zm-7-2h7c.28 0 .5.22.5.5s-.22.5-.5.5h-7c-.28 0-.5-.22-.5-.5s.22-.5.5-.5m10-4H5.5L4.01 8H20zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"/>`,
+    Sprout: `<path d="M11.5 9.5c0-2.5-2-4.5-4.5-4.5h-1v1c0 2.5 2 4.5 4.5 4.5h1zm-1-1c-1.38 0-2.5-1.12-2.5-2.5.83 0 1.57.4 2.05 1.03-.32.41-.5.92-.55 1.47m7.5.5c0-2.5-2-4.5-4.5-4.5h-1v1c0 2.5 2 4.5 4.5 4.5h1zm-1-1c-1.38 0-2.5-1.12-2.5-2.5.83 0 1.57.4 2.05 1.03-.32.41-.5.92-.55 1.47M19 13H5v2h6v6h2v-6h6zm-2 0h-4v2h4z"/>`,
+    School: `<path d="M12 3 1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9zm6.82 6L12 12.72 5.18 9 12 5.28zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73z"/>`,
+    ShieldAlert: `<path d="M12 5.99 19.53 19H4.47zM12 2 1 21h22zm1 14h-2v2h2zm0-6h-2v4h2z"/>`,
+    Compass: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m-5.5-2.5 7.51-3.49L17.5 6.5 9.99 9.99zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1"/>`,
+    Users: `<path d="M9 13.75c-2.34 0-7 1.17-7 3.5V19h14v-1.75c0-2.33-4.66-3.5-7-3.5M4.34 17c.84-.58 2.87-1.25 4.66-1.25s3.82.67 4.66 1.25zM9 12c1.93 0 3.5-1.57 3.5-3.5S10.93 5 9 5 5.5 6.57 5.5 8.5 7.07 12 9 12m0-5c.83 0 1.5.67 1.5 1.5S9.83 10 9 10s-1.5-.67-1.5-1.5S8.17 7 9 7m7.04 6.81c1.16.84 1.96 1.96 1.96 3.44V19h4v-1.75c0-2.02-3.5-3.17-5.96-3.44M15 12c1.93 0 3.5-1.57 3.5-3.5S16.93 5 15 5c-.54 0-1.04.13-1.5.35.63.89 1 1.98 1 3.15s-.37 2.26-1 3.15c.46.22.96.35 1.5.35"/>`,
+    Palette: `<path d="M12 22C6.49 22 2 17.51 2 12S6.49 2 12 2s10 4.04 10 9c0 3.31-2.69 6-6 6h-1.77c-.28 0-.5.22-.5.5 0 .12.05.23.13.33.41.47.64 1.06.64 1.67 0 1.38-1.12 2.5-2.5 2.5m0-18c-4.41 0-8 3.59-8 8s3.59 8 8 8c.28 0 .5-.22.5-.5 0-.16-.08-.28-.14-.35-.41-.46-.63-1.05-.63-1.65 0-1.38 1.12-2.5 2.5-2.5H16c2.21 0 4-1.79 4-4 0-3.86-3.59-7-8-7"/>`,
+    Utensils: `<path d="M16 6v8h3v8h2V2c-2.76 0-5 2.24-5 4m-5 3H9V2H7v7H5V2H3v7c0 2.21 1.79 4 4 4v9h2v-9c2.21 0 4-1.79 4-4V2h-2z"/>`,
+    ShoppingBag: `<path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2m-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3m7 17H5V8h14zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3"/>`,
+    Egg: `<path d="M12 3C8.5 3 5 9.33 5 14c0 3.87 3.13 7 7 7s7-3.13 7-7c0-4.67-3.5-11-7-11m0 16c-2.76 0-5-2.24-5-5 0-4.09 3.07-9 5-9s5 4.91 5 9c0 2.76-2.24 5-5 5"/><path d="M13 16c-.58 0-3-.08-3-3 0-.55-.45-1-1-1s-1 .45-1 1c0 3 1.99 5 5 5 .55 0 1-.45 1-1s-.45-1-1-1"/>`,
+    Shield: `<path d="M12 2 4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5zm6 9.09c0 4-2.55 7.7-6 8.83-3.45-1.13-6-4.82-6-8.83v-4.7l6-2.25 6 2.25z"/>`,
+    Trees: `<path d="M17 12h2L12 2 5.05 12H7l-3.9 6h6.92v4h3.95v-4H21zM6.79 16l3.9-6H8.88l3.13-4.5 3.15 4.5h-1.9l4 6z"/>`,
+    Leaf: `<path d="M15.49 9.63c-.18-2.79-1.31-5.51-3.43-7.63-2.14 2.14-3.32 4.86-3.55 7.63 1.28.68 2.46 1.56 3.49 2.63 1.03-1.06 2.21-1.94 3.49-2.63m-3.44-4.44c.63 1.03 1.07 2.18 1.3 3.38-.47.3-.91.63-1.34.98-.42-.34-.87-.67-1.33-.97.25-1.2.71-2.35 1.37-3.39M12 15.45c-.82-1.25-1.86-2.34-3.06-3.2-.13-.09-.27-.16-.4-.26.13.09.27.17.39.25C6.98 10.83 4.59 10 2 10c0 5.32 3.36 9.82 8.03 11.49.63.23 1.29.4 1.97.51.68-.12 1.33-.29 1.97-.51C18.64 19.82 22 15.32 22 10c-4.18 0-7.85 2.17-10 5.45m1.32 4.15c-.44.15-.88.27-1.33.37-.44-.09-.87-.21-1.28-.36-3.29-1.18-5.7-3.99-6.45-7.35 1.1.26 2.15.71 3.12 1.33l-.02.01c.13.09.26.18.39.25l.07.04c.99.72 1.84 1.61 2.51 2.65L12 19.1l1.67-2.55c.69-1.05 1.55-1.95 2.53-2.66l.07-.05c.09-.05.18-.11.27-.17l-.01-.02c.98-.65 2.07-1.13 3.21-1.4-.75 3.37-3.15 6.18-6.42 7.35m-4.33-7.32c-.02-.01-.04-.03-.05-.04 0 0 .01 0 .01.01.01.01.02.02.04.03"/>`,
+    HeartPulse: `<path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3m-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05"/>`,
+    Bus: `<path d="M12 2c-4.42 0-8 .5-8 4v10c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4m5.66 2.99H6.34C6.89 4.46 8.31 4 12 4s5.11.46 5.66.99m.34 2V10H6V6.99zm-.34 9.74-.29.27H6.63l-.29-.27C6.21 16.62 6 16.37 6 16v-4h12v4c0 .37-.21.62-.34.73"/>`,
+    Tent: `<path d="M10 1c0 1.66-1.34 3-3 3-.55 0-1 .45-1 1H4c0-1.66 1.34-3 3-3 .55 0 1-.45 1-1zm2 2L6 7.58V6H4v3.11L1 11.4l1.21 1.59L4 11.62V21h16v-9.38l1.79 1.36L23 11.4zm1.94 4h-3.89L12 5.52zm-6.5 2h9.12L18 10.1v.9H6v-.9zM18 13v2H6v-2zM6 19v-2h12v2z"/>`,
+    Footprints: `<path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2M9.8 8.9 7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.56-.89-1.68-1.25-2.65-.84L6 8.3V13h2V9.6z"/>`,
+    CupSoda: `<path d="M16 5v8c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2V5zm4-2H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2m-2 5V5h2v3zm2 11H2v2h18z"/>`,
+    MapPin: `<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7M7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9"/>`,
+    Church: `<path d="M18 12.22V9l-5-2.5V5h2V3h-2V1h-2v2H9v2h2v1.5L6 9v3.22L2 14v8h9v-4c0-.55.45-1 1-1s1 .45 1 1v4h9v-8zM20 20h-5v-2.04c0-1.69-1.35-3.06-3-3.06s-3 1.37-3 3.06V20H4v-4.79l4-1.81v-3.35L12 8l4 2.04v3.35l4 1.81z"/>`,
+    Activity: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 3.3 1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7zm-3.35-.95L11 5.3v1.4L7.01 9.49l-1.35-.46-.39-1.34c1.01-1.57 2.56-2.77 4.38-3.34M7.08 17.11l-1.14.1C4.73 15.81 4 13.99 4 12c0-.12.01-.23.02-.35l1-.73 1.38.48 1.46 4.34zm7.42 2.48c-.79.26-1.63.41-2.5.41s-1.71-.15-2.5-.41l-.69-1.49.64-1.1h5.11l.64 1.11zM14.27 15H9.73l-1.35-4.02L12 8.44l3.63 2.54zm3.79 2.21-1.14-.1-.79-1.37 1.46-4.34 1.39-.47 1 .73c.01.11.02.22.02.34 0 1.99-.73 3.81-1.94 5.21"/>`,
+    Mosque: `<path d="M24 7c0-1.1-2-3-2-3s-2 1.9-2 3c0 .74.4 1.38 1 1.72V13h-2v-2c0-.95-.66-1.74-1.55-1.94.34-.58.55-1.25.55-1.97 0-1.31-.65-2.53-1.74-3.25L12 1 7.74 3.84C6.65 4.56 6 5.78 6 7.09c0 .72.21 1.39.55 1.96C5.66 9.26 5 10.05 5 11v2H3V8.72c.6-.34 1-.98 1-1.72 0-1.1-2-3-2-3S0 5.9 0 7c0 .74.4 1.38 1 1.72V21h10v-4c0-.55.45-1 1-1s1 .45 1 1v4h10V8.72c.6-.34 1-.98 1-1.72M8.85 5.5 12 3.4l3.15 2.1c.53.36.85.95.85 1.59C16 8.14 15.14 9 14.09 9H9.91C8.86 9 8 8.14 8 7.09c0-.64.32-1.23.85-1.59M21 19h-6v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2H3v-4h4v-4h10v4h4z"/>`,
+    Vihara: `<path d="M21 9.02c0 1.09-.89 1.98-1.98 1.98H18V8.86c1.72-.44 3-1.99 3-3.84V5l-2 .02C19 6.11 18.11 7 17.02 7h-.52L12 1 7.5 7h-.52C5.89 7 5 6.11 5 5.02H3c0 1.86 1.28 3.4 3 3.84V11H4.98C3.89 11 3 10.11 3 9.02H1c0 1.86 1.28 3.4 3 3.84V22h7v-4c0-.55.45-1 1-1s1 .45 1 1v4h7v-9.14c1.72-.44 3-1.99 3-3.84V9zm-9-4.69L14 7h-4zM8 9h8v2H8zm10 11h-3v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2H6v-7h12z"/>`,
+    Cemetery: `<path d="M8.66 13.07c.15 0 .29-.01.43-.03C9.56 14.19 10.69 15 12 15s2.44-.81 2.91-1.96c.14.02.29.03.43.03 1.73 0 3.14-1.41 3.14-3.14 0-.71-.25-1.39-.67-1.93.43-.54.67-1.22.67-1.93 0-1.73-1.41-3.14-3.14-3.14-.15 0-.29.01-.43.03C14.44 1.81 13.31 1 12 1s-2.44.81-2.91 1.96c-.14-.02-.29-.03-.43-.03-1.73 0-3.14 1.41-3.14 3.14 0 .71.25 1.39.67 1.93-.43.54-.68 1.22-.68 1.93 0 1.73 1.41 3.14 3.15 3.14M12 13c-.62 0-1.12-.49-1.14-1.1l.12-1.09c.32.12.66.19 1.02.19s.71-.07 1.03-.19l.11 1.09c-.02.61-.52 1.1-1.14 1.1m3.34-1.93c-.24 0-.46-.07-.64-.2l-.81-.57c.55-.45.94-1.09 1.06-1.83l.88.42c.4.19.66.59.66 1.03 0 .64-.52 1.15-1.15 1.15m-.65-5.94c.2-.13.42-.2.65-.2.63 0 1.14.51 1.14 1.14 0 .44-.25.83-.66 1.03l-.88.42c-.12-.74-.51-1.38-1.07-1.83zM12 3c.62 0 1.12.49 1.14 1.1l-.11 1.09C12.71 5.07 12.36 5 12 5s-.7.07-1.02.19l-.12-1.09c.02-.61.52-1.1 1.14-1.1M8.66 4.93c.24 0 .46.07.64.2l.81.56c-.55.45-.94 1.09-1.06 1.83l-.88-.42c-.4-.2-.66-.59-.66-1.03 0-.63.52-1.14 1.15-1.14M8.17 8.9l.88-.42c.12.74.51 1.38 1.07 1.83l-.81.55c-.2.13-.42.2-.65.2-.63 0-1.14-.51-1.14-1.14-.01-.43.25-.82.65-1.02M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9m2.44-2.44c.71-1.9 2.22-3.42 4.12-4.12-.71 1.9-2.22 3.41-4.12 4.12M3 13c0 4.97 4.03 9 9 9 0-4.97-4.03-9-9-9m2.44 2.44c1.9.71 3.42 2.22 4.12 4.12-1.9-.71-3.41-2.22-4.12-4.12"/>`
   };
 
   const pathStr = paths[iconName] || paths['Compass'];
@@ -77,6 +87,7 @@ export default function InteractiveMap() {
   
   // Theme and category selections
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [categoryGeojsons, setCategoryGeojsons] = useState<Record<string, any>>({});
   const [selectedPOI, setSelectedPOI] = useState<MapPOI | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -227,6 +238,34 @@ export default function InteractiveMap() {
     (window as any).isDrawingMode = isDrawingActive;
   }, [isDrawingActive]);
 
+  // Load GeoJSON layers for active categories from Supabase
+  useEffect(() => {
+    const fetchCategoryGeojsons = async () => {
+      if (selectedCategories.length === 0) {
+        setCategoryGeojsons({});
+        return;
+      }
+      try {
+        const { data, error } = await supabase
+          .from('category_geojson')
+          .select('category_id, geojson')
+          .in('category_id', selectedCategories);
+
+        if (error) throw error;
+
+        const geojsonMap: Record<string, any> = {};
+        data?.forEach((row: any) => {
+          geojsonMap[row.category_id] = row.geojson;
+        });
+        setCategoryGeojsons(geojsonMap);
+      } catch (err) {
+        console.error('Error fetching category-specific GeoJSON layers:', err);
+      }
+    };
+
+    fetchCategoryGeojsons();
+  }, [selectedCategories, categories]);
+
   // Load static GeoJSON feature data on mount
   useEffect(() => {
     fetch('/pakintelan.geojson')
@@ -330,11 +369,11 @@ export default function InteractiveMap() {
     const getTileUrl = (style: typeof baseLayer) => {
       switch (style) {
         case 'dark':
-          return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+          return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png';
         case 'satellite':
           return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
         default: // street
-          return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+          return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
       }
     };
 
@@ -401,9 +440,9 @@ export default function InteractiveMap() {
   useEffect(() => {
     if (!tileLayerRef.current) return;
     const tileUrls = {
-      dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
       satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      street: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+      street: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
     };
     tileLayerRef.current.setUrl(tileUrls[baseLayer]);
   }, [baseLayer]);
@@ -808,7 +847,43 @@ export default function InteractiveMap() {
       });
     });
 
-  }, [filteredPOIs, selectedCategories, categories, zones, user, theme, geojsonData]);
+    // 4. Draw category-specific GeoJSON layers
+    Object.entries(categoryGeojsons).forEach(([catId, geojson]) => {
+      const cat = categories.find(c => c.id === catId);
+      const color = cat?.markerColor || '#6366f1';
+
+      L.geoJSON(geojson, {
+        filter: (feature: any) => {
+          // Exclude point geometries since they are automatically imported to 'pois' table
+          // and rendered separately as standard POI pins to avoid duplicates.
+          return feature.geometry && feature.geometry.type !== 'Point';
+        },
+        style: () => ({
+          color: color,
+          weight: 3,
+          fillColor: color,
+          fillOpacity: 0.15,
+        }),
+        onEachFeature: (feature: any, layer: any) => {
+          const props = feature.properties || {};
+          if (props.name) {
+            let tooltipContent = `<div class="p-1 text-xs"><strong>${props.name}</strong>`;
+            if (props.description) {
+              tooltipContent += `<br/><span class="text-[10px] text-zinc-500">${props.description}</span>`;
+            } else if (cat) {
+              tooltipContent += `<br/><span class="text-[10px] text-zinc-400 font-semibold uppercase">${cat.name}</span>`;
+            }
+            tooltipContent += `</div>`;
+            layer.bindTooltip(tooltipContent, {
+              sticky: true,
+              className: 'backdrop-blur-md bg-white/95 border border-zinc-200 rounded-xl shadow-xl'
+            });
+          }
+        }
+      }).addTo(overlaysGroup);
+    });
+
+  }, [filteredPOIs, selectedCategories, categories, zones, user, theme, geojsonData, categoryGeojsons]);
 
   // Handle Measurement and Custom Zone Drawing layers (visual line projections)
   useEffect(() => {
@@ -977,15 +1052,15 @@ export default function InteractiveMap() {
         {/* ACTIVE MEASURING STATUS BANNER */}
         {isMeasuring && (
           <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-indigo-600 text-white px-4 py-2 rounded-full shadow-2xl text-xs font-bold flex items-center gap-2.5 backdrop-blur-md animate-bounce border border-indigo-500 select-none">
-            <Ruler className="w-4 h-4" />
+            <SquareFootOutlined className="w-4 h-4" />
             <span>Mode Ukur Aktif: Klik beberapa titik di peta.</span>
             {measuredPoints.length > 0 && (
               <button
                 onClick={handleClearMeasure}
-                className="bg-white/20 hover:bg-white/35 rounded-full p-1 transition-colors cursor-pointer"
+                className="bg-white/20 hover:bg-white/35 rounded-full p-1 transition-colors cursor-pointer flex items-center justify-center"
                 title="Reset Ukuran"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <AutorenewOutlined className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
@@ -994,7 +1069,7 @@ export default function InteractiveMap() {
         {/* ACTIVE COORDINATE PICKING UX STATUS BANNER */}
         {isPickingActive && (
           <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-zinc-950/90 dark:bg-white/90 text-white dark:text-zinc-950 px-4 py-2.5 rounded-full shadow-2xl text-xs font-bold flex items-center gap-2.5 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 animate-pulse select-none">
-            <MapPin className="w-4.5 h-4.5 text-indigo-600 animate-bounce" />
+            <LocationOnOutlined className="w-4.5 h-4.5 text-indigo-600 animate-bounce" />
             <span>Pilih Titik di Peta: Klik di peta untuk menyimpan koordinat.</span>
             <button
               onClick={() => {
@@ -1011,7 +1086,7 @@ export default function InteractiveMap() {
         {/* ACTIVE ZONE DRAWING UX STATUS BANNER */}
         {isDrawingActive && (
           <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-indigo-600 text-white px-4 py-2.5 rounded-full shadow-2xl text-xs font-bold flex items-center gap-2.5 backdrop-blur-md border border-indigo-500/35 animate-pulse select-none">
-            <Layers className="w-4.5 h-4.5 text-white" />
+            <LayersOutlined className="w-4.5 h-4.5 text-white" />
             <span>Mode Gambar Aktif: Klik peta untuk menambah titik sudut.</span>
             <button
               onClick={() => {
@@ -1035,7 +1110,7 @@ export default function InteractiveMap() {
         {isMeasuring && measuredPoints.length > 0 && (
           <div className="absolute bottom-20 left-4 z-40 p-4 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-2xl max-w-xs flex flex-col space-y-2 text-xs select-none">
             <div className="font-bold text-zinc-900 dark:text-white flex items-center gap-2 text-sm">
-              <Ruler className="w-4 h-4 text-indigo-600" />
+              <SquareFootOutlined className="w-4 h-4 text-indigo-600" />
               <span>Detail Jarak Pengukuran</span>
             </div>
             <div className="flex flex-col space-y-1.5 font-medium">

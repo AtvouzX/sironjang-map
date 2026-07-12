@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Compass } from "lucide-react";
+import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 
 // Dynamically import InteractiveMap to disable server-side rendering (SSR)
 const InteractiveMap = dynamic(() => import("@/components/InteractiveMap"), {
@@ -9,8 +9,8 @@ const InteractiveMap = dynamic(() => import("@/components/InteractiveMap"), {
   loading: () => (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans">
       <div className="flex flex-col items-center gap-5 text-center">
-        <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-3xl text-indigo-600 dark:text-indigo-400 relative">
-          <Compass className="w-8 h-8 animate-spin" style={{ animationDuration: '3s' }} />
+        <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-3xl text-indigo-600 dark:text-indigo-400 relative flex items-center justify-center">
+          <ExploreOutlined className="w-8 h-8 animate-spin" style={{ animationDuration: '3s' }} />
           <div className="absolute inset-0 rounded-3xl border-2 border-indigo-500/20 animate-ping"></div>
         </div>
         <div className="space-y-1">

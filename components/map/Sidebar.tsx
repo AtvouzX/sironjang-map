@@ -1,19 +1,71 @@
 'use client';
 
 import React from 'react';
-import {
-  Building2, Store, Milk, Sprout, School, ShieldAlert, Compass,
-  Users, Palette, Utensils, ShoppingBag, Egg, Shield, Trees,
-  Leaf, HeartPulse, Bus, Tent, Footprints, CupSoda,
-  X, Search, ChevronRight, Map as MapIcon,
-  Info, Lock, LogOut, Plus, Database, Edit2, Trash2
-} from 'lucide-react';
 import { MapPOI, MapCategory } from '@/data/mapData';
+import ApartmentOutlined from '@mui/icons-material/ApartmentOutlined';
+import StorefrontOutlined from '@mui/icons-material/StorefrontOutlined';
+import LocalDrinkOutlined from '@mui/icons-material/LocalDrinkOutlined';
+import GrassOutlined from '@mui/icons-material/GrassOutlined';
+import SchoolOutlined from '@mui/icons-material/SchoolOutlined';
+import ReportProblemOutlined from '@mui/icons-material/ReportProblemOutlined';
+import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
+import PeopleOutlined from '@mui/icons-material/PeopleOutlined';
+import PaletteOutlined from '@mui/icons-material/PaletteOutlined';
+import RestaurantOutlined from '@mui/icons-material/RestaurantOutlined';
+import LocalMallOutlined from '@mui/icons-material/LocalMallOutlined';
+import EggOutlined from '@mui/icons-material/EggOutlined';
+import ShieldOutlined from '@mui/icons-material/ShieldOutlined';
+import ParkOutlined from '@mui/icons-material/ParkOutlined';
+import SpaOutlined from '@mui/icons-material/SpaOutlined';
+import FavoriteBorderOutlined from '@mui/icons-material/FavoriteBorderOutlined';
+import DirectionsBusOutlined from '@mui/icons-material/DirectionsBusOutlined';
+import CabinOutlined from '@mui/icons-material/CabinOutlined';
+import DirectionsWalkOutlined from '@mui/icons-material/DirectionsWalkOutlined';
+import LocalCafeOutlined from '@mui/icons-material/LocalCafeOutlined';
+import ChurchOutlined from '@mui/icons-material/ChurchOutlined';
+import SportsSoccerOutlined from '@mui/icons-material/SportsSoccerOutlined';
+import MosqueOutlined from '@mui/icons-material/MosqueOutlined';
+import TempleBuddhistOutlined from '@mui/icons-material/TempleBuddhistOutlined';
+import LocalFloristOutlined from '@mui/icons-material/LocalFloristOutlined';
+
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
+import SearchOutlined from '@mui/icons-material/SearchOutlined';
+import ChevronRightOutlined from '@mui/icons-material/ChevronRightOutlined';
+import MapOutlined from '@mui/icons-material/MapOutlined';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import LockOutlined from '@mui/icons-material/LockOutlined';
+import LogoutOutlined from '@mui/icons-material/LogoutOutlined';
+import AddOutlined from '@mui/icons-material/AddOutlined';
+import StorageOutlined from '@mui/icons-material/StorageOutlined';
+import EditOutlined from '@mui/icons-material/EditOutlined';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 
 const IconComponents: { [key: string]: React.ComponentType<any> } = {
-  Building2, Store, Milk, Sprout, School, ShieldAlert, Compass,
-  Users, Palette, Utensils, ShoppingBag, Egg, Shield, Trees,
-  Leaf, HeartPulse, Bus, Tent, Footprints, CupSoda
+  Building2: ApartmentOutlined as any,
+  Store: StorefrontOutlined as any,
+  Milk: LocalDrinkOutlined as any,
+  Sprout: GrassOutlined as any,
+  School: SchoolOutlined as any,
+  ShieldAlert: ReportProblemOutlined as any,
+  Compass: ExploreOutlined as any,
+  Users: PeopleOutlined as any,
+  Palette: PaletteOutlined as any,
+  Utensils: RestaurantOutlined as any,
+  ShoppingBag: LocalMallOutlined as any,
+  Egg: EggOutlined as any,
+  Shield: ShieldOutlined as any,
+  Trees: ParkOutlined as any,
+  Leaf: SpaOutlined as any,
+  HeartPulse: FavoriteBorderOutlined as any,
+  Bus: DirectionsBusOutlined as any,
+  Tent: CabinOutlined as any,
+  Footprints: DirectionsWalkOutlined as any,
+  CupSoda: LocalCafeOutlined as any,
+  Church: ChurchOutlined as any,
+  Activity: SportsSoccerOutlined as any,
+  Mosque: MosqueOutlined as any,
+  Vihara: TempleBuddhistOutlined as any,
+  Cemetery: LocalFloristOutlined as any
 };
 
 interface SidebarProps {
@@ -70,8 +122,8 @@ export default function Sidebar({
       {/* Sidebar Header */}
       <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl text-indigo-650 dark:text-indigo-400">
-            <MapIcon className="w-5 h-5" />
+          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl text-indigo-650 dark:text-indigo-400 flex items-center justify-center">
+            <MapOutlined className="w-5 h-5" />
           </div>
           <div>
             <h1 className="font-bold text-base leading-tight tracking-tight text-zinc-900 dark:text-white">Peta Pakintelan</h1>
@@ -88,27 +140,27 @@ export default function Sidebar({
               </span>
               <button
                 onClick={onLogout}
-                className="p-2 hover:bg-red-50 dark:hover:bg-red-950/20 text-zinc-500 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                className="p-2 hover:bg-red-50 dark:hover:bg-red-950/20 text-zinc-500 hover:text-red-500 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
                 title="Keluar Admin"
               >
-                <LogOut className="w-4 h-4" />
+                <LogoutOutlined className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <button
               onClick={onOpenLogin}
-              className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded-lg transition-colors cursor-pointer"
+              className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
               title="Login Admin"
             >
-              <Lock className="w-4 h-4" />
+              <LockOutlined className="w-4 h-4" />
             </button>
           )}
 
           <button
-            className="md:hidden p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 dark:text-zinc-400 cursor-pointer"
+            className="md:hidden p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg text-zinc-500 dark:text-zinc-400 cursor-pointer flex items-center justify-center"
             onClick={() => setSidebarOpen(false)}
           >
-            <X className="w-5 h-5" />
+            <CloseOutlined className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -123,7 +175,7 @@ export default function Sidebar({
               className="flex items-center gap-1 text-[9px] text-zinc-500 hover:text-indigo-650 hover:underline font-bold cursor-pointer"
               title="Import Data Default Asli"
             >
-              <Database className="w-3 h-3" />
+              <StorageOutlined className="w-3 h-3" />
               Seed Data
             </button>
           </div>
@@ -132,21 +184,21 @@ export default function Sidebar({
               onClick={onAddCategory}
               className="py-1.5 px-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition-colors flex items-center justify-center gap-1 cursor-pointer"
             >
-              <Plus className="w-3 h-3" />
+              <AddOutlined className="w-3 h-3" />
               Tema
             </button>
             <button
               onClick={onAddPOI}
               className="py-1.5 px-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 dark:text-zinc-950 text-white rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition-colors flex items-center justify-center gap-1 cursor-pointer"
             >
-              <Plus className="w-3 h-3" />
+              <AddOutlined className="w-3 h-3" />
               Lokasi
             </button>
             <button
               onClick={onAddZone}
               className="py-1.5 px-2 bg-indigo-55 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/40 text-indigo-650 dark:text-indigo-400 rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition-colors flex items-center justify-center gap-1 cursor-pointer border border-indigo-200/25"
             >
-              <Plus className="w-3 h-3" />
+              <AddOutlined className="w-3 h-3" />
               Zona
             </button>
           </div>
@@ -181,7 +233,7 @@ export default function Sidebar({
         ) : (
           <div className="grid grid-cols-2 gap-2 mt-2">
             {categories.map(cat => {
-              const Icon = IconComponents[cat.icon] || Compass;
+              const Icon = IconComponents[cat.icon] || ExploreOutlined;
               const isChecked = selectedCategories.includes(cat.id);
               const activeColor = cat.markerColor || '#6366f1';
               return (
@@ -222,7 +274,7 @@ export default function Sidebar({
           {selectedCategories.map(catId => {
             const cat = categories.find(c => c.id === catId);
             if (!cat) return null;
-            const Icon = IconComponents[cat.icon] || Compass;
+            const Icon = IconComponents[cat.icon] || ExploreOutlined;
             const activeColor = cat.markerColor || '#6366f1';
             return (
               <div key={cat.id} className="p-3 bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-150 dark:border-zinc-700 shadow-sm space-y-2 animate-fade-in relative group">
@@ -239,14 +291,14 @@ export default function Sidebar({
                           className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-indigo-650 rounded cursor-pointer transition-colors"
                           title="Ubah Kategori"
                         >
-                          <Edit2 className="w-3 h-3" />
+                          <EditOutlined className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => onDeleteCategory(cat.id)}
                           className="p-1 hover:bg-red-55/15 dark:hover:bg-red-950/20 text-zinc-405 hover:text-red-500 rounded cursor-pointer transition-colors"
                           title="Hapus Kategori"
                         >
-                          <Trash2 className="w-3 h-3" />
+                          <DeleteOutlined className="w-3 h-3" />
                         </button>
                       </>
                     )}
@@ -277,7 +329,7 @@ export default function Sidebar({
       {/* Search POIs */}
       <div className="p-3">
         <div className="relative">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
+          <SearchOutlined className="absolute left-3 top-2.5 w-4 h-4 text-zinc-400" />
           <input
             type="text"
             placeholder="Cari lokasi di tema aktif..."
@@ -288,9 +340,9 @@ export default function Sidebar({
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-650 dark:hover:text-white"
+              className="absolute right-3 top-2.5 text-zinc-400 hover:text-zinc-650 dark:hover:text-white flex items-center justify-center"
             >
-              <X className="w-4 h-4" />
+              <CloseOutlined className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -305,12 +357,12 @@ export default function Sidebar({
 
         {filteredPOIs.length === 0 ? (
           <div className="p-8 text-center bg-zinc-50 dark:bg-zinc-950/20 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
-            <Info className="w-6 h-6 mx-auto mb-2 text-zinc-400" />
+            <InfoOutlined className="w-6 h-6 mx-auto mb-2 text-zinc-400" />
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Tidak ada lokasi ditemukan</p>
           </div>
         ) : (
           filteredPOIs.map(poi => {
-            const PoiIcon = IconComponents[poi.icon] || Compass;
+            const PoiIcon = IconComponents[poi.icon] || ExploreOutlined;
             const isSelected = selectedPOI?.id === poi.id;
             const poiCategoryConfig = categories.find(c => c.id === poi.category) || categories[0];
             const activeColor = poiCategoryConfig?.markerColor || '#6366f1';
@@ -325,7 +377,7 @@ export default function Sidebar({
                   }`}
               >
                 <div
-                  className="p-2.5 rounded-xl text-white mt-0.5 shadow-sm shadow-black/10 group-hover:scale-105 transition-transform"
+                  className="p-2.5 rounded-xl text-white mt-0.5 shadow-sm shadow-black/10 group-hover:scale-105 transition-transform flex items-center justify-center"
                   style={{ backgroundColor: activeColor }}
                 >
                   <PoiIcon className="w-4 h-4" />
@@ -336,7 +388,7 @@ export default function Sidebar({
                     {poi.description}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-zinc-400 self-center group-hover:translate-x-0.5 transition-transform animate-pulse" />
+                <ChevronRightOutlined className="w-4 h-4 text-zinc-400 self-center group-hover:translate-x-0.5 transition-transform animate-pulse" />
               </div>
             );
           })

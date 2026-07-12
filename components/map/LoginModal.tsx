@@ -1,7 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Mail, Lock, Loader2, Compass } from 'lucide-react';
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
+import MailOutlineOutlined from '@mui/icons-material/MailOutlineOutlined';
+import LockOutlined from '@mui/icons-material/LockOutlined';
+import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined';
+import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
 import { supabase } from '@/lib/supabaseClient';
 
 interface LoginModalProps {
@@ -55,15 +59,15 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center"
         >
-          <X className="w-5 h-5" />
+          <CloseOutlined className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="flex flex-col items-center text-center mt-3 mb-6">
-          <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-2xl mb-3">
-            <Compass className="w-6 h-6 animate-pulse" />
+          <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-2xl mb-3 flex items-center justify-center">
+            <ExploreOutlined className="w-6 h-6 animate-pulse" />
           </div>
           <h2 className="font-extrabold text-xl tracking-tight text-zinc-900 dark:text-white">Portal Admin Peta</h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold mt-1">Masuk untuk mengelola indikator tematik, lokasi, dan area</p>
@@ -81,14 +85,14 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
           <div className="space-y-1.5">
             <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">Email Admin</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-zinc-400" />
+              <MailOutlineOutlined className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-zinc-400" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@pakintelan.id"
-                className="w-full pl-10 pr-4 py-3 bg-zinc-55/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all font-semibold"
+                className="w-full pl-10 pr-4 py-3 bg-zinc-55/40 dark:bg-zinc-955/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all font-semibold"
               />
             </div>
           </div>
@@ -96,14 +100,14 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
           <div className="space-y-1.5">
             <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-zinc-400" />
+              <LockOutlined className="absolute left-3.5 top-3.5 w-4.5 h-4.5 text-zinc-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-3 bg-zinc-55/40 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all font-semibold"
+                className="w-full pl-10 pr-4 py-3 bg-zinc-55/40 dark:bg-zinc-955/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-sm placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition-all font-semibold"
               />
             </div>
           </div>
@@ -115,7 +119,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <AutorenewOutlined className="w-4 h-4 animate-spin" />
                 <span>Masuk...</span>
               </>
             ) : (

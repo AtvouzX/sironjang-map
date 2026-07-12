@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Layers, ChevronDown, ChevronUp } from 'lucide-react';
+import LayersOutlined from '@mui/icons-material/LayersOutlined';
+import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
+import KeyboardArrowUpOutlined from '@mui/icons-material/KeyboardArrowUpOutlined';
 
 interface LegendProps {
   showRiver: boolean;
@@ -125,15 +127,15 @@ export default function Legend({
         className="flex items-center justify-between p-3.5 cursor-pointer font-sans border-b border-zinc-100 hover:bg-zinc-55/50 rounded-t-2xl transition-colors"
       >
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-indigo-650" />
+          <LayersOutlined className="w-4 h-4 text-indigo-650 flex-shrink-0" />
           <span className="text-xs font-extrabold uppercase tracking-wider text-zinc-805">
             {isMinimized ? 'Legenda' : 'Legenda Peta'}
           </span>
         </div>
         {isMinimized ? (
-          <ChevronUp className="w-4 h-4 text-zinc-400" />
+          <KeyboardArrowUpOutlined className="w-4 h-4 text-zinc-400" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-zinc-400" />
+          <KeyboardArrowDownOutlined className="w-4 h-4 text-zinc-400" />
         )}
       </div>
 

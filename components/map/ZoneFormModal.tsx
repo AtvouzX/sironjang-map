@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Loader2, Save, Layers, Play, RefreshCw, Undo, Eye, Info } from 'lucide-react';
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
+import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined';
+import SaveOutlined from '@mui/icons-material/SaveOutlined';
+import LayersOutlined from '@mui/icons-material/LayersOutlined';
+import PlayArrowOutlined from '@mui/icons-material/PlayArrowOutlined';
+import UndoOutlined from '@mui/icons-material/UndoOutlined';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { MapCategory, MapZone } from '@/data/mapData';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -135,8 +141,8 @@ export default function ZoneFormModal({
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-zinc-800">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-xl">
-            <Layers className="w-5 h-5" />
+          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-xl flex items-center justify-center">
+            <LayersOutlined className="w-5 h-5" />
           </div>
           <div>
             <h2 className="font-extrabold text-sm text-zinc-900 dark:text-white">
@@ -152,9 +158,9 @@ export default function ZoneFormModal({
             setIsDrawingActive(false);
             onClose();
           }}
-          className="p-1.5 text-zinc-450 hover:text-zinc-650 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer transition-colors"
+          className="p-1.5 text-zinc-450 hover:text-zinc-650 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer transition-colors flex items-center justify-center"
         >
-          <X className="w-4.5 h-4.5" />
+          <CloseOutlined className="w-4.5 h-4.5" />
         </button>
       </div>
 
@@ -210,7 +216,7 @@ export default function ZoneFormModal({
           </div>
 
           <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-semibold leading-relaxed flex gap-1.5 items-start">
-            <Info className="w-4 h-4 text-indigo-550 flex-shrink-0 mt-0.5" />
+            <InfoOutlined className="w-4 h-4 text-indigo-550 flex-shrink-0 mt-0.5" />
             <span>Klik beberapa lokasi di peta secara berurutan untuk menghubungkan garis batas dan membentuk area. Minimal butuh 3 titik.</span>
           </div>
 
@@ -225,7 +231,7 @@ export default function ZoneFormModal({
                   : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-750 dark:text-zinc-250 hover:bg-zinc-50'
               }`}
             >
-              <Play className="w-3.5 h-3.5" />
+              <PlayArrowOutlined className="w-3.5 h-3.5" />
               <span>{isDrawingActive ? 'Jeda Klik' : 'Mulai Klik'}</span>
             </button>
 
@@ -235,7 +241,7 @@ export default function ZoneFormModal({
               disabled={drawnCoordinates.length === 0}
               className="py-2 px-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-750 dark:text-zinc-250 rounded-xl flex items-center justify-center gap-1.5 text-[10px] font-bold hover:bg-zinc-50 disabled:opacity-40 cursor-pointer transition-all"
             >
-              <Undo className="w-3.5 h-3.5" />
+              <UndoOutlined className="w-3.5 h-3.5" />
               <span>Undo</span>
             </button>
 
@@ -245,7 +251,7 @@ export default function ZoneFormModal({
               disabled={drawnCoordinates.length === 0}
               className="py-2 px-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-750 dark:text-zinc-250 rounded-xl flex items-center justify-center gap-1.5 text-[10px] font-bold hover:bg-zinc-50 disabled:opacity-40 cursor-pointer transition-all"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <AutorenewOutlined className="w-3.5 h-3.5" />
               <span>Reset</span>
             </button>
           </div>
@@ -308,12 +314,12 @@ export default function ZoneFormModal({
           >
             {loading ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <AutorenewOutlined className="w-3.5 h-3.5 animate-spin" />
                 <span>Menyimpan...</span>
               </>
             ) : (
               <>
-                <Save className="w-3.5 h-3.5" />
+                <SaveOutlined className="w-3.5 h-3.5" />
                 <span>Simpan Area</span>
               </>
             )}

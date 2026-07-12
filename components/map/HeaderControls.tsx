@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
-import {
-  Menu, ChevronLeft, ChevronDown, Ruler, Layers
-} from 'lucide-react';
+import MenuOutlined from '@mui/icons-material/MenuOutlined';
+import ChevronLeftOutlined from '@mui/icons-material/ChevronLeftOutlined';
+import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
+import SquareFootOutlined from '@mui/icons-material/SquareFootOutlined';
+import LayersOutlined from '@mui/icons-material/LayersOutlined';
 import { MapCategory } from '@/data/mapData';
 
 interface HeaderControlsProps {
@@ -59,10 +61,10 @@ export default function HeaderControls({
       <div className="flex items-center gap-2 pointer-events-auto">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-705 dark:text-zinc-200 flex items-center justify-center transition-all cursor-pointer"
+          className="p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl hover:bg-zinc-50 dark:hover:bg-zinc-855 text-zinc-705 dark:text-zinc-200 flex items-center justify-center transition-all cursor-pointer"
           title="Toggle Sidebar"
         >
-          {sidebarOpen ? <ChevronLeft className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {sidebarOpen ? <ChevronLeftOutlined className="w-5 h-5" /> : <MenuOutlined className="w-5 h-5" />}
         </button>
 
         {/* Current Thematic indicator (when sidebar closed) */}
@@ -96,7 +98,7 @@ export default function HeaderControls({
                     : `${selectedCategories.length} Tema Aktif`
                 }
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+              <KeyboardArrowDownOutlined className="w-3.5 h-3.5 text-zinc-500" />
             </button>
 
             {/* Thematic Indicator Dropdown Menu */}
@@ -170,17 +172,17 @@ export default function HeaderControls({
             }`}
           title="Ukur Jarak Antar Titik"
         >
-          <Ruler className="w-4.5 h-4.5" />
+          <SquareFootOutlined className="w-4.5 h-4.5" />
         </button>
 
         {/* Layer style selector */}
         <div ref={layersDropdownRef} className="relative">
           <button
             onClick={() => setLayersDropdownOpen(!layersDropdownOpen)}
-            className="p-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg text-zinc-705 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 flex items-center justify-center cursor-pointer"
+            className="p-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg text-zinc-705 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-855 flex items-center justify-center cursor-pointer"
             title="Pilih Style Peta"
           >
-            <Layers className="w-4.5 h-4.5" />
+            <LayersOutlined className="w-4.5 h-4.5" />
           </button>
 
           <div className={`absolute right-0 top-12 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 w-48 flex-col space-y-1 transition-all z-50 ${layersDropdownOpen ? 'flex' : 'hidden'}`}>

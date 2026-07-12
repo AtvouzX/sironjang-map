@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Loader2, Save, MapPin, Plus, Trash2, HelpCircle } from 'lucide-react';
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
+import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined';
+import SaveOutlined from '@mui/icons-material/SaveOutlined';
+import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
+import AddOutlined from '@mui/icons-material/AddOutlined';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import HelpOutlineOutlined from '@mui/icons-material/HelpOutlineOutlined';
 import { MapPOI, MapCategory } from '@/data/mapData';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -19,7 +25,7 @@ const AVAILABLE_ICONS = [
   'Building2', 'Store', 'Milk', 'Sprout', 'School', 'ShieldAlert', 'Compass',
   'Users', 'Palette', 'Utensils', 'ShoppingBag', 'Egg', 'Shield', 'Trees',
   'Leaf', 'HeartPulse', 'Bus', 'Tent', 'Footprints', 'CupSoda', 'Activity',
-  'Flame', 'BookOpen', 'Heart', 'MapPin'
+  'Flame', 'BookOpen', 'Heart', 'MapPin', 'Church'
 ];
 
 export default function POIFormModal({
@@ -197,15 +203,15 @@ export default function POIFormModal({
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center"
         >
-          <X className="w-5 h-5" />
+          <CloseOutlined className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="flex items-center gap-2 mb-6 mt-1">
-          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-xl">
-            <MapPin className="w-5 h-5" />
+          <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-xl flex items-center justify-center">
+            <LocationOnOutlined className="w-5 h-5" />
           </div>
           <div>
             <h2 className="font-extrabold text-lg text-zinc-900 dark:text-white">
@@ -274,9 +280,9 @@ export default function POIFormModal({
               <button
                 type="button"
                 onClick={onStartMapPick}
-                className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:hover:bg-indigo-900/40 text-indigo-650 dark:text-indigo-400 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-colors flex items-center gap-1 cursor-pointer border border-indigo-200/20"
+                className="px-2.5 py-1 bg-indigo-55 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:hover:bg-indigo-900/40 text-indigo-650 dark:text-indigo-400 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-colors flex items-center justify-center gap-1 cursor-pointer border border-indigo-200/20"
               >
-                <MapPin className="w-3 h-3" />
+                <LocationOnOutlined className="w-3.5 h-3.5" />
                 Pilih Dari Peta
               </button>
             </div>
@@ -346,7 +352,7 @@ export default function POIFormModal({
                 onClick={handleAddDetail}
                 className="p-1 text-indigo-650 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/20 rounded-md transition-colors flex items-center gap-1 text-[10px] font-bold"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <AddOutlined className="w-3.5 h-3.5" />
                 Tambah Detail
               </button>
             </div>
@@ -373,9 +379,9 @@ export default function POIFormModal({
                   <button
                     type="button"
                     onClick={() => handleRemoveDetail(idx)}
-                    className="p-2 text-zinc-400 hover:text-red-500 hover:bg-zinc-50 dark:hover:bg-zinc-950/20 rounded-xl transition-all"
+                    className="p-2 text-zinc-400 hover:text-red-500 hover:bg-zinc-50 dark:hover:bg-zinc-950/20 rounded-xl transition-all cursor-pointer flex items-center justify-center"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <DeleteOutlined className="w-4 h-4" />
                   </button>
                 </div>
               ))}
@@ -401,12 +407,12 @@ export default function POIFormModal({
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <AutorenewOutlined className="w-3.5 h-3.5 animate-spin" />
                   <span>Menyimpan...</span>
                 </>
               ) : (
                 <>
-                  <Save className="w-3.5 h-3.5" />
+                  <SaveOutlined className="w-3.5 h-3.5" />
                   <span>Simpan Lokasi</span>
                 </>
               )}
