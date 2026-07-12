@@ -27,7 +27,7 @@ import Legend from './map/Legend';
 // Fix Leaflet default marker icon 404 errors by overriding with transparent 1x1 pixel data URL
 if (typeof window !== 'undefined') {
   const transparentPixel = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-  L.Icon.Default.prototype._getIconUrl = () => transparentPixel;
+  (L.Icon.Default.prototype as any)._getIconUrl = () => transparentPixel;
   L.Icon.Default.mergeOptions({
     iconRetinaUrl: transparentPixel,
     iconUrl: transparentPixel,
