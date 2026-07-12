@@ -23,7 +23,18 @@ export interface MapCategory {
   stats: { label: string; value: string }[];
 }
 
-export const MAP_CATEGORIES: MapCategory[] = [
+export interface MapZone {
+  id?: string;
+  name: string;
+  category: string;
+  color: string;
+  coordinates: [number, number][];
+}
+
+export const MAP_CATEGORIES: MapCategory[] = [];
+export const MAP_POIS: MapPOI[] = [];
+
+export const DEFAULT_CATEGORIES: MapCategory[] = [
   {
     id: 'administrasi',
     name: 'Administrasi',
@@ -117,7 +128,7 @@ export const MAP_CATEGORIES: MapCategory[] = [
   }
 ];
 
-export const MAP_POIS: MapPOI[] = [
+export const DEFAULT_POIS: MapPOI[] = [
   // Administrasi
   {
     id: 'admin-kelurahan',
@@ -235,8 +246,8 @@ export const MAP_POIS: MapPOI[] = [
     details: {
       'Ketua Kelompok': 'Bapak Supardi',
       'Populasi Sapi': '45 Ekor Sapi Limosin & Simmental',
-      'Inovasi': 'Pengolahan pupuk kandang kompos organik dan instalasi biogas rumah tangga',
-      'Fokus Usaha': 'Penyediaan sapi kurban dan penjualan pupuk organik'
+      'Inovasi': 'Pengolahan pupuk kandang kompos organik and instalasi biogas rumah tangga',
+      'Fokus Usaha': 'Penyediaan sapi kurban and penjualan pupuk organik'
     }
   },
   {
@@ -251,7 +262,7 @@ export const MAP_POIS: MapPOI[] = [
       'Pengelola': 'Pak Joko Susilo',
       'Populasi': '1.500 Ekor Ayam Ras',
       'Kapasitas': '± 55 kg telur segar per hari',
-      'Pemasaran': 'Langsung ke warung warga dan pasar tradisional terdekat'
+      'Pemasaran': 'Langsung ke warung warga and pasar tradisional terdekat'
     }
   },
   {
@@ -264,7 +275,7 @@ export const MAP_POIS: MapPOI[] = [
     icon: 'Shield',
     details: {
       'Pengelola': 'Mas Danang',
-      'Manfaat Produk': 'Susu kambing etawa berkhasiat untuk terapi pernapasan dan imunitas',
+      'Manfaat Produk': 'Susu kambing etawa berkhasiat untuk terapi pernapasan and imunitas',
       'Kontak': '0821-9988-7766',
       'Jam Kunjungan': '15:00 - 17:00 (Waktu pemerahan susu)'
     }
@@ -1464,47 +1475,42 @@ export const BOUNDARY_PAKINTELAN = [
   ]
 ];
 
-export const ZONE_UMKM = [
-  [-7.0905, 110.3895],
-  [-7.0915, 110.3945],
-  [-7.0940, 110.3940],
-  [-7.0935, 110.3890]
+export const DEFAULT_ZONES: MapZone[] = [
+  {
+    name: 'Zonasi UMKM',
+    category: 'umkm',
+    color: '#f59e0b',
+    coordinates: [
+      [-7.0905, 110.3895],
+      [-7.0915, 110.3945],
+      [-7.0940, 110.3940],
+      [-7.0935, 110.3890]
+    ]
+  },
+  {
+    name: 'Kawasan Peternakan',
+    category: 'peternakan',
+    color: '#84cc16',
+    coordinates: [
+      [-7.0930, 110.3980],
+      [-7.0950, 110.4030],
+      [-7.0990, 110.4010],
+      [-7.0970, 110.3970]
+    ]
+  },
+  {
+    name: 'Sentra Pertanian',
+    category: 'pertanian',
+    color: '#10b981',
+    coordinates: [
+      [-7.0880, 110.3950],
+      [-7.0900, 110.4000],
+      [-7.0940, 110.3970],
+      [-7.0960, 110.3930],
+      [-7.0985, 110.3955],
+      [-7.1005, 110.3975],
+      [-7.0990, 110.3930]
+    ]
+  }
 ];
 
-export const ZONE_PETERNAKAN = [
-  [-7.0930, 110.3980],
-  [-7.0950, 110.4030],
-  [-7.0990, 110.4010],
-  [-7.0970, 110.3970]
-];
-
-export const ZONE_PERTANIAN = [
-  [-7.0880, 110.3950],
-  [-7.0900, 110.4000],
-  [-7.0940, 110.3970],
-  [-7.0960, 110.3930],
-  [-7.0985, 110.3955],
-  [-7.1005, 110.3975],
-  [-7.0990, 110.3930]
-];
-
-// Paths and Routes for Evacuation & Tourism
-export const EVACUATION_ROUTE_1 = [
-  [-7.0988, 110.3915], // Start: Wisata Kali (vulnerable valley)
-  [-7.0960, 110.3890], // Mr Koesbiono street
-  [-7.0945, 110.3942]  // End: Lapangan Bola (TES)
-];
-
-export const EVACUATION_ROUTE_2 = [
-  [-7.0995, 110.3985], // Start: Ondo Rante (far east)
-  [-7.0965, 110.3970], // RW 03
-  [-7.0925, 110.3940], // Main road junction
-  [-7.09203, 110.39348] // End: Kelurahan (TEA)
-];
-
-export const TOURISM_TRAIL = [
-  [-7.0862, 110.3888], // Kopi Joss
-  [-7.0965, 110.3892], // Kebun Durian
-  [-7.0988, 110.3915], // Wisata Kali
-  [-7.0995, 110.3985]  // Ondo Rante
-];
