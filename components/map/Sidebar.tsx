@@ -137,7 +137,7 @@ export default function Sidebar({
           </div>
           <div>
             <h1 className="font-bold text-sm sm:text-base leading-tight tracking-tight text-zinc-900 dark:text-white">Peta Pakintelan</h1>
-            <p className="text-[9px] sm:text-[10px] text-zinc-550 dark:text-zinc-400 font-bold uppercase tracking-wider">Kec. Gunungpati, Smg</p>
+            <p className="text-[9px] sm:text-[10px] text-zinc-550 dark:text-zinc-400 font-bold uppercase tracking-wider">Kec. Gunungpati, Semarang</p>
           </div>
         </div>
 
