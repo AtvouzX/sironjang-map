@@ -346,6 +346,7 @@ export default function InteractiveMap() {
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const hasFitBoundsRef = useRef(false);
   const geojsonLayerGroupRef = useRef<L.LayerGroup | null>(null);
+  const poiMarkersRef = useRef<Record<string, L.Marker>>({});
 
   const toggleCategory = (categoryId: string) => {
     setSelectedCategories(prev =>
@@ -671,6 +672,7 @@ export default function InteractiveMap() {
     // Clear layers
     markersGroup.clearLayers();
     overlaysGroup.clearLayers();
+    poiMarkersRef.current = {};
 
     // Darkdim mask cover — use GeoJSON kelurahan boundary if available, fallback to BOUNDARY_PAKINTELAN
     const worldCoords = [
@@ -784,6 +786,7 @@ export default function InteractiveMap() {
       });
 
       const marker = L.marker([poi.lat, poi.lng], { icon: customIcon }).addTo(markersGroup);
+      poiMarkersRef.current[poi.id] = marker;
 
       const popupContent = `
         <div class="p-1 font-sans">
@@ -922,7 +925,26 @@ export default function InteractiveMap() {
     setDrawerOpen(true);
     const map = mapRef.current;
     if (map) {
-      map.flyTo([poi.lat, poi.lng], 16, { animate: true, duration: 1.5 });
+      map.flyTo([poi.lat, poi.lng], 18, { animate: true, duration: 1.5 });
+      const marker = poiMarkersRef.current[poi.id];
+      if (marker) {
+        setTimeout(() => {
+          marker.openPopup();
+        }, 1000);
+      }
+    }
+  };
+
+  const handleLocatePOI = (poi: MapPOI) => {
+    const map = mapRef.current;
+    if (map) {
+      map.flyTo([poi.lat, poi.lng], 18, { animate: true, duration: 1.5 });
+      const marker = poiMarkersRef.current[poi.id];
+      if (marker) {
+        setTimeout(() => {
+          marker.openPopup();
+        }, 1000);
+      }
     }
   };
 
@@ -1122,6 +1144,7 @@ export default function InteractiveMap() {
           user={user}
           onEditPOI={handleOpenEditPOI}
           onDeletePOI={handleDeletePOI}
+          onLocatePOI={handleLocatePOI}
         />
 
       </main>
@@ -1135,6 +1158,7 @@ export default function InteractiveMap() {
         user={user}
         onEditPOI={handleOpenEditPOI}
         onDeletePOI={handleDeletePOI}
+        onLocatePOI={handleLocatePOI}
       />
 
       {/* Admin Operations Modals */}

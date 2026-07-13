@@ -5,6 +5,7 @@ import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import NavigationOutlined from '@mui/icons-material/NavigationOutlined';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import LocationSearchingOutlined from '@mui/icons-material/LocationSearchingOutlined';
 import { MapPOI } from '@/data/mapData';
 
 interface DetailsCardProps {
@@ -14,6 +15,7 @@ interface DetailsCardProps {
   user: any;
   onEditPOI: (poi: MapPOI) => void;
   onDeletePOI: (poiId: string) => void;
+  onLocatePOI: (poi: MapPOI) => void;
 }
 
 export default function DetailsCard({
@@ -22,9 +24,10 @@ export default function DetailsCard({
   sidebarOpen,
   user,
   onEditPOI,
-  onDeletePOI
+  onDeletePOI,
+  onLocatePOI
 }: DetailsCardProps) {
-  if (!selectedPOI || !sidebarOpen) return null;
+  if (!selectedPOI) return null;
 
   return (
     <div className="hidden lg:flex absolute top-4 right-4 bottom-4 w-96 z-40 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl flex-col overflow-hidden animate-slide-in select-none">
@@ -45,7 +48,7 @@ export default function DetailsCard({
           onClick={() => setSelectedPOI(null)}
           className="absolute top-3 right-3 p-1.5 bg-black/40 hover:bg-black/60 rounded-full text-white border border-white/10 transition-colors cursor-pointer flex items-center justify-center"
         >
-          <CloseOutlined className="w-4 h-4" />
+          <CloseOutlined className="w-4.5 h-4.5" />
         </button>
       </div>
 
@@ -76,15 +79,24 @@ export default function DetailsCard({
 
       {/* Action Buttons Footer */}
       <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex flex-col gap-2">
-        <a
-          href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
-          target="_blank"
-          rel="noreferrer"
-          className="w-full py-3 px-4 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 font-bold rounded-2xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer"
-        >
-          <NavigationOutlined className="w-4 h-4" />
-          Petunjuk Arah (Navigasi)
-        </a>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => onLocatePOI(selectedPOI)}
+            className="py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer border-0"
+          >
+            <LocationSearchingOutlined className="w-4 h-4" />
+            Lihat di Peta
+          </button>
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
+            target="_blank"
+            rel="noreferrer"
+            className="py-3 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 font-bold rounded-2xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer border border-zinc-200 dark:border-zinc-800"
+          >
+            <NavigationOutlined className="w-4 h-4" />
+            Navigasi
+          </a>
+        </div>
 
         {/* Admin Edit/Delete POI Panel */}
         {user && (

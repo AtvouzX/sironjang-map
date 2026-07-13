@@ -5,6 +5,7 @@ import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import NavigationOutlined from '@mui/icons-material/NavigationOutlined';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import LocationSearchingOutlined from '@mui/icons-material/LocationSearchingOutlined';
 import { MapPOI } from '@/data/mapData';
 
 interface DetailsDrawerProps {
@@ -15,6 +16,7 @@ interface DetailsDrawerProps {
   user: any;
   onEditPOI: (poi: MapPOI) => void;
   onDeletePOI: (poiId: string) => void;
+  onLocatePOI: (poi: MapPOI) => void;
 }
 
 export default function DetailsDrawer({
@@ -24,7 +26,8 @@ export default function DetailsDrawer({
   setDrawerOpen,
   user,
   onEditPOI,
-  onDeletePOI
+  onDeletePOI,
+  onLocatePOI
 }: DetailsDrawerProps) {
   if (!selectedPOI) return null;
 
@@ -75,15 +78,24 @@ export default function DetailsDrawer({
 
       {/* Buttons Footer */}
       <div className="p-4 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex flex-col gap-2 pb-6">
-        <a
-          href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
-          target="_blank"
-          rel="noreferrer"
-          className="w-full py-3 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer"
-        >
-          <NavigationOutlined className="w-4 h-4" />
-          Petunjuk Arah (Navigasi)
-        </a>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={() => onLocatePOI(selectedPOI)}
+            className="py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer border-0"
+          >
+            <LocationSearchingOutlined className="w-4 h-4" />
+            Lihat di Peta
+          </button>
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${selectedPOI.lat},${selectedPOI.lng}`}
+            target="_blank"
+            rel="noreferrer"
+            className="py-3 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 font-bold rounded-xl flex items-center justify-center gap-2 text-xs transition-colors shadow-md cursor-pointer border border-zinc-200 dark:border-zinc-800"
+          >
+            <NavigationOutlined className="w-4 h-4" />
+            Navigasi
+          </a>
+        </div>
 
         {/* Admin actions list */}
         {user && (
@@ -106,7 +118,7 @@ export default function DetailsDrawer({
                   setDrawerOpen(false);
                 }
               }}
-              className="py-2.5 border border-red-200/50 hover:border-red-500/50 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold text-red-500 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="py-2.5 border border-red-200/50 hover:border-red-500/50 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold text-red-500 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
               <DeleteOutlined className="w-3.5 h-3.5" />
               Hapus
