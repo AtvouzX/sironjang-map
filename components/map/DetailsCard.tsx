@@ -6,6 +6,9 @@ import NavigationOutlined from '@mui/icons-material/NavigationOutlined';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import LocationSearchingOutlined from '@mui/icons-material/LocationSearchingOutlined';
+import StarOutlined from '@mui/icons-material/StarOutlined';
+import LanguageOutlined from '@mui/icons-material/LanguageOutlined';
+import PhoneOutlined from '@mui/icons-material/PhoneOutlined';
 import { MapPOI } from '@/data/mapData';
 
 interface DetailsCardProps {
@@ -63,15 +66,66 @@ export default function DetailsCard({
 
         {/* Attributes fields rendering */}
         {selectedPOI.details && Object.keys(selectedPOI.details).length > 0 && (
-          <div className="border-t border-zinc-150 dark:border-zinc-800 pt-3">
+          <div className="border-t border-zinc-155 dark:border-zinc-800 pt-3">
             <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-405 block mb-2">Informasi Detail</span>
             <div className="space-y-2">
-              {Object.entries(selectedPOI.details).map(([key, val]) => (
-                <div key={key} className="bg-zinc-55/60 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 flex flex-col">
-                  <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-550 uppercase">{key}</span>
-                  <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5 leading-relaxed">{val}</span>
-                </div>
-              ))}
+              {Object.entries(selectedPOI.details).map(([key, val]) => {
+                if (!val) return null;
+
+                let valElement = <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-0.5 leading-relaxed">{val}</span>;
+
+                if (key.toLowerCase() === 'website') {
+                  const url = val.startsWith('http') ? val : `https://${val}`;
+                  valElement = (
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-indigo-650 dark:text-indigo-400 hover:underline mt-0.5 leading-relaxed flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <LanguageOutlined className="w-3.5 h-3.5" />
+                      Kunjungi Website
+                    </a>
+                  );
+                } else if (key.toLowerCase() === 'telepon') {
+                  valElement = (
+                    <a
+                      href={`tel:${val.replace(/\s+/g, '')}`}
+                      className="text-xs font-bold text-indigo-650 dark:text-indigo-400 hover:underline mt-0.5 leading-relaxed flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <PhoneOutlined className="w-3.5 h-3.5" />
+                      {val}
+                    </a>
+                  );
+                } else if (key.toLowerCase() === 'rating') {
+                  const ratingNum = parseFloat(val);
+                  if (!isNaN(ratingNum)) {
+                    valElement = (
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">{val}</span>
+                        <div className="flex items-center text-amber-500">
+                          {[...Array(5)].map((_, i) => (
+                            <StarOutlined
+                              key={i}
+                              className={`w-3.5 h-3.5 ${i < Math.floor(ratingNum)
+                                  ? 'text-amber-500'
+                                  : 'text-zinc-300 dark:text-zinc-700'
+                                }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                }
+
+                return (
+                  <div key={key} className="bg-zinc-55/60 dark:bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 flex flex-col">
+                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-555 uppercase">{key}</span>
+                    {valElement}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -115,7 +169,7 @@ export default function DetailsCard({
                   setSelectedPOI(null);
                 }
               }}
-              className="py-2.5 border border-red-200/50 hover:border-red-500/50 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold text-red-500 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="py-2.5 border border-red-200/50 hover:border-red-500/50 rounded-2xl hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-bold text-red-500 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
               <DeleteOutlined className="w-3.5 h-3.5" />
               Hapus

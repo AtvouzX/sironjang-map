@@ -21,7 +21,7 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import UploadOutlined from '@mui/icons-material/UploadOutlined';
 
 import ApartmentOutlined from '@mui/icons-material/ApartmentOutlined';
-import StorefrontOutlined from '@mui/icons-material/StorefrontOutlined';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import LocalDrinkOutlined from '@mui/icons-material/LocalDrinkOutlined';
 import GrassOutlined from '@mui/icons-material/GrassOutlined';
 import SchoolOutlined from '@mui/icons-material/SchoolOutlined';
@@ -65,7 +65,7 @@ const AVAILABLE_ICONS = [
 
 const ICON_MAP: Record<string, any> = {
   Building2: ApartmentOutlined as any,
-  Store: StorefrontOutlined as any,
+  Store: StorefrontOutlinedIcon as any,
   Milk: LocalDrinkOutlined as any,
   Sprout: GrassOutlined as any,
   School: SchoolOutlined as any,
@@ -111,48 +111,93 @@ const PRESETS = [
 const getIconForPOI = (props: any) => {
   const building = props.building || '';
   const amenity = props.amenity || '';
-  const office = props.office || '';
   const shop = props.shop || '';
   const leisure = props.leisure || '';
   const landuse = props.landuse || '';
   const religion = props.religion || '';
 
-  if (amenity === 'school' || amenity === 'university' || amenity === 'kindergarten' || building === 'school') {
-    return 'School';
-  }
-  if (amenity === 'restaurant' || amenity === 'cafe' || amenity === 'fast_food' || amenity === 'food_court') {
-    return 'Utensils';
-  }
-  if (religion === 'muslim' || building === 'mosque' || amenity === 'mosque') {
+  const geojsonCategory = String(props.category || '').toLowerCase();
+  const geojsonType = String(props.type || '').toLowerCase();
+  const geojsonSubtypes = String(props.subtypes || '').toLowerCase();
+
+  const matches = (keywords: string[]) => {
+    return keywords.some(kw => 
+      geojsonCategory.includes(kw) || 
+      geojsonType.includes(kw) || 
+      geojsonSubtypes.includes(kw)
+    );
+  };
+
+  // 1. Religion / Worship
+  if (religion === 'muslim' || building === 'mosque' || amenity === 'mosque' || matches(['mosque', 'masjid', 'musala'])) {
     return 'Mosque';
   }
-  if (religion === 'buddhist' || religion === 'taoist' || building === 'vihara' || building === 'temple') {
+  if (religion === 'buddhist' || religion === 'taoist' || building === 'vihara' || building === 'temple' || matches(['vihara', 'temple', 'klenteng'])) {
     return 'Vihara';
   }
-  if (amenity === 'place_of_worship' || religion || building === 'church') {
+  if (amenity === 'place_of_worship' || religion || building === 'church' || matches(['church', 'gereja'])) {
     return 'Church';
   }
-  if (amenity === 'hospital' || amenity === 'clinic' || amenity === 'doctors' || amenity === 'pharmacy') {
+
+  // 2. Health
+  if (amenity === 'hospital' || amenity === 'clinic' || amenity === 'doctors' || amenity === 'pharmacy' || matches(['hospital', 'clinic', 'pharmacy', 'apotek', 'puskesmas', 'dokter'])) {
     return 'HeartPulse';
   }
-  if (amenity === 'bus_station' || amenity === 'bus_stop') {
+
+  // 3. Education
+  if (amenity === 'school' || amenity === 'university' || amenity === 'kindergarten' || building === 'school' || matches(['school', 'university', 'sekolah', 'kampus', 'paud', 'tk'])) {
+    return 'School';
+  }
+
+  // 4. Food & Drink (Restaurants & Cafes)
+  if (amenity === 'restaurant' || amenity === 'cafe' || amenity === 'fast_food' || amenity === 'food_court' ||
+      matches(['restaurant', 'diner', 'warung', 'restoran', 'food', 'nasi goreng', 'bakso', 'soto', 'noodle', 'makanan'])) {
+    if (amenity === 'cafe' || matches(['cafe', 'cafes', 'kopi', 'coffee', 'drink', 'teh'])) {
+      return 'CupSoda';
+    }
+    return 'Utensils';
+  }
+
+  // 5. Lodging
+  if (matches(['guest house', 'homestay', 'hotel', 'lodging'])) {
+    return 'Tent';
+  }
+
+  // 6. Transportation
+  if (amenity === 'bus_station' || amenity === 'bus_stop' || matches(['bus', 'halte', 'stasiun'])) {
     return 'Bus';
   }
-  if (shop || amenity === 'marketplace') {
-    return 'ShoppingBag';
-  }
-  if (amenity === 'police' || amenity === 'fire_station') {
+
+  // 7. Police & Security
+  if (amenity === 'police' || amenity === 'fire_station' || matches(['police', 'polisi', 'militer', 'tni'])) {
     return 'Shield';
   }
-  if (office || building === 'office' || building === 'village_office') {
+
+  // 8. Retail / Shop / Market
+  if (shop || amenity === 'marketplace' || matches(['store', 'market', 'minimarket', 'supermarket', 'toko', 'pasar', 'grocer', 'sayur', 'buah', 'retail'])) {
+    return 'Store';
+  }
+
+  // 9. Government & Office
+  if (props.office || building === 'office' || building === 'village_office' || matches(['government', 'office', 'pemerintah', 'kantor', 'public relations'])) {
     return 'Building2';
   }
-  if (leisure === 'pitch' || leisure === 'sports_centre' || props.sport) {
+
+  // 10. Sports & Recreation
+  if (leisure === 'pitch' || leisure === 'sports_centre' || props.sport || matches(['gym', 'sports', 'fitness', 'lapangan', 'stadion'])) {
     return 'Activity';
   }
-  if (landuse === 'cemetery' || amenity === 'grave_yard') {
+
+  // 11. Cemetery
+  if (landuse === 'cemetery' || amenity === 'grave_yard' || matches(['cemetery', 'makam', 'kuburan'])) {
     return 'Cemetery';
   }
+
+  // 12. Parks & Garden
+  if (matches(['orchard', 'garden', 'kebun', 'taman', 'park'])) {
+    return 'Trees';
+  }
+
   return 'Compass';
 };
 
@@ -222,59 +267,73 @@ const mapPropertiesToDetails = (props: any): Record<string, string> => {
   const details: Record<string, string> = {};
 
   // 1. Alamat
-  const address = props['addr:full'] || props['addr:street'] || '';
+  const address = props.address || props['addr:full'] || props['addr:street'] || '';
   if (address) {
     details['Alamat'] = address;
   }
 
-  // 2. Tipe Bangunan
-  if (props.building && props.building !== 'yes') {
+  // 2. Tipe/Kategori
+  const category = props.category || props.type || props.subtypes || '';
+  if (category) {
+    details['Tipe/Kategori'] = translateValue('general', category);
+  }
+
+  // 3. Telepon
+  const phone = props.phone || props['contact:phone'] || '';
+  if (phone) {
+    details['Telepon'] = phone;
+  }
+
+  // 4. Website
+  const website = props.website || '';
+  if (website) {
+    details['Website'] = website;
+  }
+
+  // 5. Rating
+  const rating = props.rating;
+  if (rating !== undefined && rating !== null && rating !== '') {
+    details['Rating'] = String(rating);
+  }
+
+  // Fallbacks for compatibility with other GeoJSON/OSM structures:
+  // 6. Tipe Bangunan
+  if (props.building && props.building !== 'yes' && !details['Tipe/Kategori']) {
     details['Tipe Bangunan'] = translateValue('building', props.building);
   }
 
-  // 3. Fasilitas
-  if (props.amenity) {
+  // 7. Fasilitas
+  if (props.amenity && !details['Tipe/Kategori']) {
     details['Fasilitas'] = translateValue('amenity', props.amenity);
   }
 
-  // 4. Fasilitas Kantor
+  // 8. Fasilitas Kantor
   if (props.office) {
     details['Fasilitas Kantor'] = translateValue('office', props.office);
   }
 
-  // 5. Agama
+  // 9. Agama
   if (props.religion) {
     details['Agama'] = translateValue('religion', props.religion);
   }
 
-  // 6. Kapasitas
+  // 10. Kapasitas
   const capacity = props['capacity:persons'] || props.capacity || '';
   if (capacity) {
     details['Kapasitas'] = translateValue('capacity:persons', capacity);
   }
 
-  // 7. Jumlah Lantai
+  // 11. Jumlah Lantai
   if (props['building:levels']) {
     details['Jumlah Lantai'] = translateValue('building:levels', props['building:levels']);
   }
 
-  // 8. Kontak
-  const phone = props.phone || props['contact:phone'] || '';
-  if (phone) {
-    details['Kontak'] = phone;
-  }
-
-  // 9. Situs Web
-  if (props.website) {
-    details['Situs Web'] = props.website;
-  }
-
-  // 10. Jam Buka
+  // 12. Jam Buka
   if (props.opening_hours) {
     details['Jam Buka'] = props.opening_hours;
   }
 
-  // 11. Informasi Lapangan & Makam
+  // 13. Informasi Lapangan & Makam
   if (props.leisure) {
     details['Aktivitas Rekreasi'] = translateValue('leisure', props.leisure);
   }
@@ -289,12 +348,7 @@ const mapPropertiesToDetails = (props: any): Record<string, string> => {
 };
 
 const countStats = (features: any[]) => {
-  let mosques = 0;
-  let churches = 0;
-  let temples = 0;
-  let schools = 0;
-  let cemeteries = 0;
-  let sportsFields = 0;
+  const counts: Record<string, number> = {};
   let totalPois = 0;
   let totalLinesPolygons = 0;
 
@@ -304,32 +358,18 @@ const countStats = (features: any[]) => {
 
     if (geomType === 'Point') {
       totalPois++;
-      const religion = props.religion || '';
-      const building = props.building || '';
-      const amenity = props.amenity || '';
-      const landuse = props.landuse || '';
-      const leisure = props.leisure || '';
-
-      if (religion === 'muslim' || building === 'mosque' || amenity === 'mosque') {
-        mosques++;
-      } else if (religion === 'christian' || religion === 'catholic' || building === 'church' || amenity === 'church') {
-        churches++;
-      } else if (religion === 'buddhist' || religion === 'taoist' || building === 'vihara' || building === 'temple') {
-        temples++;
-      } else if (amenity === 'place_of_worship') {
-        mosques++;
-      }
-
-      if (amenity === 'school' || building === 'school') {
-        schools++;
-      }
-
-      if (landuse === 'cemetery' || amenity === 'grave_yard') {
-        cemeteries++;
-      }
-
-      if (leisure === 'pitch' || leisure === 'sports_centre' || props.sport) {
-        sportsFields++;
+      let cat = props.category || props.type || '';
+      if (cat) {
+        // Normalize: replace underscores with space, capitalize first letter
+        cat = cat.replace(/_/g, ' ').trim();
+        cat = cat.charAt(0).toUpperCase() + cat.slice(1);
+        
+        // Minor plural/English translations for clean stats
+        if (cat.toLowerCase() === 'restaurants') cat = 'Restoran';
+        if (cat.toLowerCase() === 'cafes') cat = 'Kafe';
+        if (cat.toLowerCase() === 'attractions') cat = 'Atraksi Wisata';
+        
+        counts[cat] = (counts[cat] || 0) + 1;
       }
     } else {
       totalLinesPolygons++;
@@ -337,32 +377,24 @@ const countStats = (features: any[]) => {
   });
 
   const generatedStats: { label: string; value: string }[] = [];
-  if (mosques > 0) {
-    generatedStats.push({ label: 'Masjid/Musala', value: `${mosques} Lokasi` });
-  }
-  if (churches > 0) {
-    generatedStats.push({ label: 'Gereja', value: `${churches} Lokasi` });
-  }
-  if (temples > 0) {
-    generatedStats.push({ label: 'Vihara/Kuil', value: `${temples} Lokasi` });
-  }
-  if (schools > 0) {
-    generatedStats.push({ label: 'Sekolah', value: `${schools} Lokasi` });
-  }
-  if (sportsFields > 0) {
-    generatedStats.push({ label: 'Lapangan Olahraga', value: `${sportsFields} Area` });
-  }
-  if (cemeteries > 0) {
-    generatedStats.push({ label: 'Pemakaman', value: `${cemeteries} Area` });
-  }
-  if (totalPois > 0) {
+
+  // Sort categories by count descending
+  const sortedCats = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+  // Take the top categories (up to 5) and add them as stats
+  sortedCats.slice(0, 5).forEach(([label, count]) => {
+    generatedStats.push({ label, value: `${count} Lokasi` });
+  });
+
+  // Always append total POIs or other info if relevant, keeping max stats to 5
+  if (totalPois > 0 && generatedStats.length < 5) {
     generatedStats.push({ label: 'Total POI', value: `${totalPois} Titik` });
   }
-  if (totalLinesPolygons > 0) {
+  if (totalLinesPolygons > 0 && generatedStats.length < 5) {
     generatedStats.push({ label: 'Jalan/Zona', value: `${totalLinesPolygons} Jalur` });
   }
 
-  return generatedStats;
+  return generatedStats.slice(0, 5);
 };
 
 const parseFeatureToPOI = (feature: any, categoryId: string) => {

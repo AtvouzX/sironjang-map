@@ -10,7 +10,7 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import HelpOutlineOutlined from '@mui/icons-material/HelpOutlineOutlined';
 
 import ApartmentOutlined from '@mui/icons-material/ApartmentOutlined';
-import StorefrontOutlined from '@mui/icons-material/StorefrontOutlined';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import LocalDrinkOutlined from '@mui/icons-material/LocalDrinkOutlined';
 import GrassOutlined from '@mui/icons-material/GrassOutlined';
 import SchoolOutlined from '@mui/icons-material/SchoolOutlined';
@@ -59,7 +59,7 @@ const AVAILABLE_ICONS = [
 
 const ICON_MAP: Record<string, any> = {
   Building2: ApartmentOutlined as any,
-  Store: StorefrontOutlined as any,
+  Store: StorefrontOutlinedIcon as any,
   Milk: LocalDrinkOutlined as any,
   Sprout: GrassOutlined as any,
   School: SchoolOutlined as any,
