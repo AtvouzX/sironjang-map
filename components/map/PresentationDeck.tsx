@@ -85,9 +85,11 @@ export default function PresentationDeck({
       subtitle: "Panduan Penggunaan Sistem Informasi Geografis",
       description: "Selamat datang di Peta Tematik Interaktif Kelurahan Pakintelan. Slide interaktif ini akan mendemonstrasikan fitur-fitur peta serta cara menggunakannya.",
       bulletPoints: [
-        "Peta interaktif ini memvisualisasikan data wilayah secara spasial.",
-        "Pelajari fungsi kontrol navigasi, filter tema, dan alat ukur.",
-        "Kamera dan opsi peta akan bergerak otomatis mengikuti perpindahan slide."
+        "Mendukung digitalisasi administrasi dan publikasi data potensi kelurahan secara modern.",
+        "Mempermudah pemetaan lokasi penting (Pemerintahan, UMKM, Fasilitas Umum) secara visual.",
+        "Meningkatkan literasi digital dan spasial bagi jajaran perangkat Kelurahan Pakintelan.",
+        "Menjamin keberlanjutan data melalui fitur pembaruan mandiri di Portal Admin CMS.",
+        "Menyediakan rujukan data spasial dasar untuk perumusan kebijakan pembangunan desa."
       ],
       icon: MapOutlined
     },
@@ -592,11 +594,9 @@ export default function PresentationDeck({
         {/* Bullet points checklist */}
         <div className="bg-zinc-50 dark:bg-zinc-955 border border-zinc-150/45 dark:border-zinc-800 rounded-2xl p-3.5 sm:p-5 space-y-2.5 sm:space-y-3">
           <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">
-            {currentSlide === 0
-              ? "Detail Informasi & Panduan"
-              : currentSlide === totalSlides - 1
-                ? "Manfaat & Hasil Program"
-                : "Langkah Penggunaan"}
+            {currentSlide === 0 || currentSlide === totalSlides - 1
+              ? "Manfaat & Hasil Program"
+              : "Langkah Penggunaan"}
           </span>
           {currentSlideData.bulletPoints.map((point, index) => (
             <div key={index} className="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm text-zinc-750 dark:text-zinc-300 font-semibold leading-relaxed">
