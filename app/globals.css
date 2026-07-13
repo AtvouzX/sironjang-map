@@ -252,3 +252,12 @@ body {
   background: rgba(161, 161, 170, 0.35);
 }
 
+/* Responsiveness overrides for Mobile Sidebar Drawer */
+@media (max-w: 640px) {
+  aside.md\:hidden {
+    width: 82vw !important;
+    max-w: 340px !important;
+    box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25) !important;
+  }
+}
+

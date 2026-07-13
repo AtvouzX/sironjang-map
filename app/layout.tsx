@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Peta Tematik Interaktif Kelurahan Pakintelan",
-  description: "Sistem Informasi Geografis (SIG) interaktif Kelurahan Pakintelan, Gunungpati, Semarang. Menampilkan peta administrasi, zonasi UMKM, peternakan, pertanian, aksesbilitas, jalur evakuasi, dan wisata.",
+  description: "Sistem Informasi Geografis (SIG) interaktif Kelurahan Pakintelan, Gunungpati, Semarang.",
 };
 
 export default function RootLayout({

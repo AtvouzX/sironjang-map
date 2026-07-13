@@ -20,6 +20,7 @@ import {
 } from '@/data/mapData';
 import { supabase } from '@/lib/supabaseClient';
 import Sidebar from './map/Sidebar';
+import PresentationDeck from './map/PresentationDeck';
 import HeaderControls from './map/HeaderControls';
 import DetailsCard from './map/DetailsCard';
 import DetailsDrawer from './map/DetailsDrawer';
@@ -90,6 +91,7 @@ export default function InteractiveMap() {
 
   // Theme and category selections
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [categoryGeojsons, setCategoryGeojsons] = useState<Record<string, any>>({});
   const [selectedPOI, setSelectedPOI] = useState<MapPOI | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -973,6 +975,14 @@ export default function InteractiveMap() {
   return (
     <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 relative">
 
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/25 dark:bg-black/50 backdrop-blur-xs z-40 transition-opacity duration-300 cursor-pointer animate-fade-in"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar Navigation */}
       <Sidebar
         sidebarOpen={sidebarOpen}
@@ -1006,6 +1016,8 @@ export default function InteractiveMap() {
         }}
         onEditCategory={handleOpenEditCategory}
         onDeleteCategory={handleDeleteCategory}
+        isPresentationMode={isPresentationMode}
+        setIsPresentationMode={setIsPresentationMode}
       />
 
       {/* Main Container */}
@@ -1213,6 +1225,40 @@ export default function InteractiveMap() {
         isDrawingActive={isDrawingActive}
         setIsDrawingActive={setIsDrawingActive}
       />
+
+      {isPresentationMode && (
+        <PresentationDeck
+          onClose={() => setIsPresentationMode(false)}
+          categories={categories}
+          pois={pois}
+          map={mapRef.current}
+          setSelectedCategories={setSelectedCategories}
+          handleSelectPOI={handleSelectPOI}
+          clearSelectPOI={() => {
+            setSelectedPOI(null);
+            setDrawerOpen(false);
+          }}
+          setBaseLayer={setBaseLayer}
+          setIsMeasuring={setIsMeasuring}
+          handleClearMeasure={handleClearMeasure}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          onAddCategory={() => {
+            setCategoryToEdit(null);
+            setIsCategoryFormOpen(true);
+          }}
+          onAddPOI={() => {
+            setPoiToEdit(null);
+            setPickingLatLng(null);
+            setIsPOIFormOpen(true);
+          }}
+          onAddZone={() => {
+            setZoneToEdit(null);
+            setDrawnCoordinates([]);
+            setIsZoneFormOpen(true);
+          }}
+        />
+      )}
 
     </div>
   );
