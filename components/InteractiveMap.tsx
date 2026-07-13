@@ -1257,6 +1257,8 @@ export default function InteractiveMap() {
             setDrawnCoordinates([]);
             setIsZoneFormOpen(true);
           }}
+          setThemeDropdownOpen={setThemeDropdownOpen}
+          setLayersDropdownOpen={setLayersDropdownOpen}
         />
       )}
 

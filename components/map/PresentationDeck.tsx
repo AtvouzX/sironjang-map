@@ -38,6 +38,8 @@ interface PresentationDeckProps {
   onAddCategory: () => void;
   onAddPOI: () => void;
   onAddZone: () => void;
+  setThemeDropdownOpen?: (val: boolean) => void;
+  setLayersDropdownOpen?: (val: boolean) => void;
 }
 
 interface Slide {
@@ -68,7 +70,9 @@ export default function PresentationDeck({
   setSidebarOpen,
   onAddCategory,
   onAddPOI,
-  onAddZone
+  onAddZone,
+  setThemeDropdownOpen,
+  setLayersDropdownOpen
 }: PresentationDeckProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -167,7 +171,7 @@ export default function PresentationDeck({
         "Klik tombol '+ Tema' di panel Kelola Peta sidebar kiri.",
         "Isi nama kategori baru (contoh: 'Pertanian' atau 'Wisata').",
         "Pilih ikon visual penanda, warna marker, serta tulis deskripsi ringkas tema.",
-        "Simpan untuk mendaftarkannya secara otomatis ke database Supabase."
+        "Simpan untuk mendaftarkannya secara otomatis ke database."
       ],
       icon: CategoryOutlined,
       actionLabel: "Buka Formulir Tambah Tema"
@@ -232,6 +236,12 @@ export default function PresentationDeck({
       handleClearMeasure();
       setSidebarOpen(true);
       clearSelectPOI();
+      if (setThemeDropdownOpen) {
+        setThemeDropdownOpen(false);
+      }
+      if (setLayersDropdownOpen) {
+        setLayersDropdownOpen(false);
+      }
       if (categories.length > 0) {
         setSelectedCategories([categories[0].id]);
       }
@@ -261,6 +271,15 @@ export default function PresentationDeck({
     // Reset temporary states on slide change
     setIsMeasuring(false);
     handleClearMeasure();
+    if (setThemeDropdownOpen) {
+      setThemeDropdownOpen(false);
+    }
+    if (setLayersDropdownOpen) {
+      setLayersDropdownOpen(false);
+    }
+    if (slide.id !== 4) {
+      clearSelectPOI();
+    }
 
     // Custom action routing per slide ID
     switch (slide.id) {
@@ -275,15 +294,21 @@ export default function PresentationDeck({
         break;
 
       case 2:
-        // Navigasi: satellite style
-        setSidebarOpen(true);
-        setBaseLayer('satellite');
+        // Navigasi: satellite style (set automatically as street, layers dropdown closed)
+        setSidebarOpen(false);
+        setBaseLayer('street');
+        if (setLayersDropdownOpen) {
+          setLayersDropdownOpen(false);
+        }
         flyToIfNeeded([-7.09203, 110.39348], 15);
         break;
 
       case 3:
-        // Theme Filter: Toggle UMKM theme, show street
-        setSidebarOpen(true);
+        // Theme Filter: Toggle UMKM theme, show street via header controls
+        setSidebarOpen(false);
+        if (setThemeDropdownOpen) {
+          setThemeDropdownOpen(true);
+        }
         setBaseLayer('street');
         setSelectedCategories(['umkm']);
         flyToIfNeeded([-7.09203, 110.39348], 15);
@@ -299,7 +324,7 @@ export default function PresentationDeck({
 
       case 5:
         // Measuring: activate measurement state
-        setSidebarOpen(true);
+        setSidebarOpen(false);
         setBaseLayer('street');
         setIsMeasuring(true);
         flyToIfNeeded([-7.09203, 110.39348], 16);
@@ -380,6 +405,14 @@ export default function PresentationDeck({
 
     // Then trigger the modal open triggers / selection manually
     switch (currentSlideData.id) {
+      case 2:
+        // Navigasi: satellite style action
+        // Open layerdropdown in header and change map to satellite
+        if (setLayersDropdownOpen) {
+          setLayersDropdownOpen(true);
+        }
+        setBaseLayer('satellite');
+        break;
       case 4:
         // Details Card selection
         const foundPoi = pois.find(p => p.id === 'way/505824314');
@@ -404,9 +437,8 @@ export default function PresentationDeck({
   // Minimized component rendering (retains compact size at bottom-right/left)
   if (isMinimized) {
     return (
-      <div className={`fixed bottom-4 inset-x-4 md:inset-x-auto md:bottom-6 z-[60] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl p-3 flex items-center gap-3 animate-fade-in select-none max-w-sm md:w-auto md:max-w-none ${
-        currentSlide === 3 ? 'md:left-6' : 'md:right-6'
-      }`}>
+      <div className={`fixed bottom-4 inset-x-4 md:inset-x-auto md:bottom-6 z-[60] bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl p-3 flex items-center gap-3 animate-fade-in select-none max-w-sm md:w-auto md:max-w-none ${currentSlide === 3 ? 'md:left-6' : 'md:right-6'
+        }`}>
         <div className="p-2 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl text-indigo-650 dark:text-indigo-400 flex items-center justify-center">
           <SlideIcon className="w-4 h-4 animate-bounce" />
         </div>
@@ -500,7 +532,7 @@ export default function PresentationDeck({
 
       {/* Slide Content Body */}
       <div className="p-4 sm:p-6 md:p-8 flex-1 overflow-y-auto space-y-4 sm:space-y-5 scrollbar-thin">
-        
+
         {/* Main Info */}
         <div className="flex items-start gap-3 sm:gap-4 md:gap-5">
           <div className="p-2.5 sm:p-3.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 rounded-xl sm:rounded-2xl flex-shrink-0 flex items-center justify-center shadow-inner">
