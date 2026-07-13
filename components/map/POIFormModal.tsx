@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import AutorenewOutlined from '@mui/icons-material/AutorenewOutlined';
 import SaveOutlined from '@mui/icons-material/SaveOutlined';
@@ -8,6 +8,35 @@ import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 import AddOutlined from '@mui/icons-material/AddOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import HelpOutlineOutlined from '@mui/icons-material/HelpOutlineOutlined';
+
+import ApartmentOutlined from '@mui/icons-material/ApartmentOutlined';
+import StorefrontOutlined from '@mui/icons-material/StorefrontOutlined';
+import LocalDrinkOutlined from '@mui/icons-material/LocalDrinkOutlined';
+import GrassOutlined from '@mui/icons-material/GrassOutlined';
+import SchoolOutlined from '@mui/icons-material/SchoolOutlined';
+import ReportProblemOutlined from '@mui/icons-material/ReportProblemOutlined';
+import ExploreOutlined from '@mui/icons-material/ExploreOutlined';
+import PeopleOutlined from '@mui/icons-material/PeopleOutlined';
+import PaletteOutlined from '@mui/icons-material/PaletteOutlined';
+import RestaurantOutlined from '@mui/icons-material/RestaurantOutlined';
+import LocalMallOutlined from '@mui/icons-material/LocalMallOutlined';
+import EggOutlined from '@mui/icons-material/EggOutlined';
+import ShieldOutlined from '@mui/icons-material/ShieldOutlined';
+import ParkOutlined from '@mui/icons-material/ParkOutlined';
+import SpaOutlined from '@mui/icons-material/SpaOutlined';
+import FavoriteBorderOutlined from '@mui/icons-material/FavoriteBorderOutlined';
+import DirectionsBusOutlined from '@mui/icons-material/DirectionsBusOutlined';
+import CabinOutlined from '@mui/icons-material/CabinOutlined';
+import DirectionsWalkOutlined from '@mui/icons-material/DirectionsWalkOutlined';
+import LocalCafeOutlined from '@mui/icons-material/LocalCafeOutlined';
+import ChurchOutlined from '@mui/icons-material/ChurchOutlined';
+import SportsSoccerOutlined from '@mui/icons-material/SportsSoccerOutlined';
+import MosqueOutlined from '@mui/icons-material/MosqueOutlined';
+import TempleBuddhistOutlined from '@mui/icons-material/TempleBuddhistOutlined';
+import LocalFloristOutlined from '@mui/icons-material/LocalFloristOutlined';
+import WhatshotOutlined from '@mui/icons-material/WhatshotOutlined';
+import MenuBookOutlined from '@mui/icons-material/MenuBookOutlined';
+
 import { MapPOI, MapCategory } from '@/data/mapData';
 import { supabase } from '@/lib/supabaseClient';
 
@@ -25,8 +54,40 @@ const AVAILABLE_ICONS = [
   'Building2', 'Store', 'Milk', 'Sprout', 'School', 'ShieldAlert', 'Compass',
   'Users', 'Palette', 'Utensils', 'ShoppingBag', 'Egg', 'Shield', 'Trees',
   'Leaf', 'HeartPulse', 'Bus', 'Tent', 'Footprints', 'CupSoda', 'Activity',
-  'Flame', 'BookOpen', 'Heart', 'MapPin', 'Church'
+  'Flame', 'BookOpen', 'Heart', 'MapPin', 'Church', 'Mosque', 'Vihara', 'Cemetery'
 ];
+
+const ICON_MAP: Record<string, any> = {
+  Building2: ApartmentOutlined as any,
+  Store: StorefrontOutlined as any,
+  Milk: LocalDrinkOutlined as any,
+  Sprout: GrassOutlined as any,
+  School: SchoolOutlined as any,
+  ShieldAlert: ReportProblemOutlined as any,
+  Compass: ExploreOutlined as any,
+  Users: PeopleOutlined as any,
+  Palette: PaletteOutlined as any,
+  Utensils: RestaurantOutlined as any,
+  ShoppingBag: LocalMallOutlined as any,
+  Egg: EggOutlined as any,
+  Shield: ShieldOutlined as any,
+  Trees: ParkOutlined as any,
+  Leaf: SpaOutlined as any,
+  HeartPulse: FavoriteBorderOutlined as any,
+  Bus: DirectionsBusOutlined as any,
+  Tent: CabinOutlined as any,
+  Footprints: DirectionsWalkOutlined as any,
+  CupSoda: LocalCafeOutlined as any,
+  Church: ChurchOutlined,
+  Activity: SportsSoccerOutlined,
+  Mosque: MosqueOutlined,
+  Vihara: TempleBuddhistOutlined,
+  Cemetery: LocalFloristOutlined,
+  Flame: WhatshotOutlined,
+  BookOpen: MenuBookOutlined,
+  Heart: FavoriteBorderOutlined,
+  MapPin: LocationOnOutlined
+};
 
 export default function POIFormModal({
   isOpen,
@@ -49,16 +110,12 @@ export default function POIFormModal({
   const [error, setError] = useState<string | null>(null);
 
   const isEdit = !!poiToEdit;
-
-  // Sync with pickedLatLng from map
-  useEffect(() => {
-    if (pickedLatLng && isOpen) {
-      setLat(pickedLatLng.lat.toFixed(6));
-      setLng(pickedLatLng.lng.toFixed(6));
-    }
-  }, [pickedLatLng, isOpen]);
+  // Tracks whether the modal was closed temporarily to pick a coordinate from the map.
+  // When true, we reopen without resetting the form so user's inputs are preserved.
+  const wasPickingRef = useRef(false);
 
   useEffect(() => {
+    if (!isOpen) return;
     if (poiToEdit) {
       setName(poiToEdit.name);
       setId(poiToEdit.id);
@@ -67,13 +124,20 @@ export default function POIFormModal({
       setLng(poiToEdit.lng.toString());
       setDescription(poiToEdit.description);
       setIcon(poiToEdit.icon);
-      
       const detailsList = Object.entries(poiToEdit.details || {}).map(([key, val]) => ({
         key,
         value: val
       }));
       setDetails(detailsList);
+      wasPickingRef.current = false;
+    } else if (wasPickingRef.current) {
+      // Modal just reopened after coordinate pick — preserve existing form values,
+      // only fill in the newly picked coordinates.
+      setLat(pickedLatLng ? pickedLatLng.lat.toFixed(6) : '');
+      setLng(pickedLatLng ? pickedLatLng.lng.toFixed(6) : '');
+      wasPickingRef.current = false;
     } else {
+      // Fresh open — reset the entire form
       setName('');
       setId('');
       setCategory(categories[0]?.id || '');
@@ -87,7 +151,20 @@ export default function POIFormModal({
       ]);
     }
     setError(null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poiToEdit, isOpen, categories]);
+  // Note: pickedLatLng intentionally NOT in deps — it is read at open time via the closure above
+  // and is handled by the separate effect below for live updates.
+
+  // Update lat/lng if user picks a NEW point after the form is already open
+  useEffect(() => {
+    if (pickedLatLng && isOpen) {
+      setLat(pickedLatLng.lat.toFixed(6));
+      setLng(pickedLatLng.lng.toFixed(6));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickedLatLng]);
+
 
   if (!isOpen) return null;
 
@@ -279,7 +356,10 @@ export default function POIFormModal({
               <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">Koordinat Lokasi *</label>
               <button
                 type="button"
-                onClick={onStartMapPick}
+                onClick={() => {
+                  wasPickingRef.current = true;
+                  onStartMapPick();
+                }}
                 className="px-2.5 py-1 bg-indigo-55 hover:bg-indigo-100 dark:bg-indigo-950/30 dark:hover:bg-indigo-900/40 text-indigo-650 dark:text-indigo-400 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-colors flex items-center justify-center gap-1 cursor-pointer border border-indigo-200/20"
               >
                 <LocationOnOutlined className="w-3.5 h-3.5" />
@@ -312,21 +392,30 @@ export default function POIFormModal({
 
           {/* Icon Selector */}
           <div className="space-y-1">
-            <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">Ikon Pin Lokasi</label>
-            <div className="grid grid-cols-8 gap-2 p-2 bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-h-24 overflow-y-auto scrollbar-thin">
-              {AVAILABLE_ICONS.map((ico) => (
-                <button
-                  type="button"
-                  key={ico}
-                  onClick={() => setIcon(ico)}
-                  className={`p-2 rounded-lg text-center flex items-center justify-center transition-all ${
-                    icon === ico ? 'bg-indigo-600 text-white shadow-md' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'
-                  }`}
-                  title={ico}
-                >
-                  <span className="text-[9px] font-mono leading-none truncate w-full block">{ico.slice(0, 5)}</span>
-                </button>
-              ))}
+            <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">Ikon Pin Lokasi *</label>
+            <div className="grid grid-cols-8 gap-1.5 p-2 bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-h-36 overflow-y-auto scrollbar-thin">
+              {AVAILABLE_ICONS.map((ico) => {
+                const IconComp = ICON_MAP[ico];
+                return (
+                  <button
+                    type="button"
+                    key={ico}
+                    onClick={() => setIcon(ico)}
+                    className={`p-2 rounded-lg flex items-center justify-center transition-all ${
+                      icon === ico
+                        ? 'bg-indigo-600 text-white shadow-md'
+                        : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60'
+                    }`}
+                    title={ico}
+                  >
+                    {IconComp ? <IconComp className="w-4 h-4" /> : null}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-semibold mt-1">
+              {(() => { const Ic = ICON_MAP[icon]; return Ic ? <Ic className="w-3.5 h-3.5 text-indigo-500" /> : null; })()}
+              <span>Ikon Terpilih: <strong className="text-indigo-600 dark:text-indigo-400">{icon}</strong></span>
             </div>
           </div>
 

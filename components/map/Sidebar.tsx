@@ -27,6 +27,9 @@ import SportsSoccerOutlined from '@mui/icons-material/SportsSoccerOutlined';
 import MosqueOutlined from '@mui/icons-material/MosqueOutlined';
 import TempleBuddhistOutlined from '@mui/icons-material/TempleBuddhistOutlined';
 import LocalFloristOutlined from '@mui/icons-material/LocalFloristOutlined';
+import WhatshotOutlined from '@mui/icons-material/WhatshotOutlined';
+import MenuBookOutlined from '@mui/icons-material/MenuBookOutlined';
+import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import SearchOutlined from '@mui/icons-material/SearchOutlined';
@@ -65,7 +68,11 @@ const IconComponents: { [key: string]: React.ComponentType<any> } = {
   Activity: SportsSoccerOutlined as any,
   Mosque: MosqueOutlined as any,
   Vihara: TempleBuddhistOutlined as any,
-  Cemetery: LocalFloristOutlined as any
+  Cemetery: LocalFloristOutlined as any,
+  Flame: WhatshotOutlined as any,
+  BookOpen: MenuBookOutlined as any,
+  Heart: FavoriteBorderOutlined as any,
+  MapPin: LocationOnOutlined as any
 };
 
 interface SidebarProps {
@@ -89,7 +96,6 @@ interface SidebarProps {
   onAddZone: () => void;
   onEditCategory: (cat: MapCategory) => void;
   onDeleteCategory: (catId: string) => void;
-  onImportDefaultData: () => void;
 }
 
 export default function Sidebar({
@@ -112,13 +118,12 @@ export default function Sidebar({
   onAddPOI,
   onAddZone,
   onEditCategory,
-  onDeleteCategory,
-  onImportDefaultData
+  onDeleteCategory
 }: SidebarProps) {
-  
+
   const sidebarContent = (
     <div className="flex flex-col h-full overflow-hidden select-none bg-white dark:bg-zinc-900">
-      
+
       {/* Sidebar Header */}
       <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -170,14 +175,6 @@ export default function Sidebar({
         <div className="p-3 border-b border-zinc-200 dark:border-zinc-800 bg-indigo-50/25 dark:bg-indigo-950/10 space-y-2">
           <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-indigo-650 dark:text-indigo-400">
             <span>Kelola Peta</span>
-            <button 
-              onClick={onImportDefaultData}
-              className="flex items-center gap-1 text-[9px] text-zinc-500 hover:text-indigo-650 hover:underline font-bold cursor-pointer"
-              title="Import Data Default Asli"
-            >
-              <StorageOutlined className="w-3 h-3" />
-              Seed Data
-            </button>
           </div>
           <div className="grid grid-cols-3 gap-1">
             <button
@@ -228,7 +225,7 @@ export default function Sidebar({
 
         {categories.length === 0 ? (
           <div className="p-4 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900">
-            <p className="text-[11px] text-zinc-400">Tidak ada kategori. {user ? 'Gunakan "Seed Data" atau "Tema" untuk menambah.' : 'Silakan login sebagai admin untuk membuat kategori.'}</p>
+            <p className="text-[11px] text-zinc-400">Tidak ada kategori. {user ? 'Gunakan "Tema" untuk menambah.' : 'Silakan login sebagai admin untuk membuat kategori.'}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2 mt-2">
@@ -405,17 +402,15 @@ export default function Sidebar({
   return (
     <>
       {/* 1A. DESKTOP SIDEBAR */}
-      <aside className={`hidden md:flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 z-20 ${
-        mounted ? 'transition-all duration-300' : ''
-      } ${sidebarOpen ? 'w-[380px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-r-0'
+      <aside className={`hidden md:flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 z-20 ${mounted ? 'transition-all duration-300' : ''
+        } ${sidebarOpen ? 'w-[380px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-r-0'
         }`}>
         {sidebarContent}
       </aside>
 
       {/* 1B. MOBILE SIDEBAR */}
-      <aside className={`md:hidden fixed top-0 left-0 h-full w-full sm:w-[380px] z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-r border-zinc-200 dark:border-zinc-800 flex flex-col ${
-        mounted ? 'transition-transform duration-300' : ''
-      } ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      <aside className={`md:hidden fixed top-0 left-0 h-full w-full sm:w-[380px] z-50 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-r border-zinc-200 dark:border-zinc-800 flex flex-col ${mounted ? 'transition-transform duration-300' : ''
+        } ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
         {sidebarContent}
       </aside>

@@ -136,7 +136,14 @@ export default function ZoneFormModal({
   };
 
   return (
-    <div className="fixed top-4 right-4 bottom-4 w-96 z-40 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl flex flex-col p-5 overflow-hidden animate-slide-in select-none">
+    <div
+      className={`fixed inset-0 z-40 flex items-start justify-end p-4`}
+      style={{ pointerEvents: isDrawingActive ? 'none' : 'auto' }}
+    >
+    <div
+      className="w-96 max-h-full bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl flex flex-col p-5 overflow-hidden animate-slide-in select-none"
+      style={{ pointerEvents: 'auto' }}
+    >
       
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-zinc-800">
@@ -328,6 +335,7 @@ export default function ZoneFormModal({
 
       </form>
 
+    </div>
     </div>
   );
 }

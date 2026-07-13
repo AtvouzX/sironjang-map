@@ -45,6 +45,9 @@ import SportsSoccerOutlined from '@mui/icons-material/SportsSoccerOutlined';
 import MosqueOutlined from '@mui/icons-material/MosqueOutlined';
 import TempleBuddhistOutlined from '@mui/icons-material/TempleBuddhistOutlined';
 import LocalFloristOutlined from '@mui/icons-material/LocalFloristOutlined';
+import WhatshotOutlined from '@mui/icons-material/WhatshotOutlined';
+import MenuBookOutlined from '@mui/icons-material/MenuBookOutlined';
+import LocationOnOutlined from '@mui/icons-material/LocationOnOutlined';
 
 interface CategoryFormModalProps {
   isOpen: boolean;
@@ -85,7 +88,11 @@ const ICON_MAP: Record<string, any> = {
   Activity: SportsSoccerOutlined,
   Mosque: MosqueOutlined,
   Vihara: TempleBuddhistOutlined,
-  Cemetery: LocalFloristOutlined
+  Cemetery: LocalFloristOutlined,
+  Flame: WhatshotOutlined,
+  BookOpen: MenuBookOutlined,
+  Heart: FavoriteBorderOutlined,
+  MapPin: LocationOnOutlined
 };
 
 const PRESETS = [

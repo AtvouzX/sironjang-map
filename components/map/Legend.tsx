@@ -124,7 +124,9 @@ export default function Legend({
       {/* Header */}
       <div
         onClick={() => setIsMinimized(!isMinimized)}
-        className="flex items-center justify-between p-3.5 cursor-pointer font-sans border-b border-zinc-100 hover:bg-zinc-55/50 rounded-t-2xl transition-colors"
+        className={`flex items-center justify-between p-3.5 cursor-pointer font-sans hover:bg-zinc-55/50 transition-colors ${
+          isMinimized ? 'rounded-2xl' : 'border-b border-zinc-100 rounded-t-2xl'
+        }`}
       >
         <div className="flex items-center gap-2">
           <LayersOutlined className="w-4 h-4 text-indigo-650 flex-shrink-0" />

@@ -68,12 +68,15 @@ const getIconSvg = (iconName: string) => {
     Activity: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m1 3.3 1.35-.95c1.82.56 3.37 1.76 4.38 3.34l-.39 1.34-1.35.46L13 6.7zm-3.35-.95L11 5.3v1.4L7.01 9.49l-1.35-.46-.39-1.34c1.01-1.57 2.56-2.77 4.38-3.34M7.08 17.11l-1.14.1C4.73 15.81 4 13.99 4 12c0-.12.01-.23.02-.35l1-.73 1.38.48 1.46 4.34zm7.42 2.48c-.79.26-1.63.41-2.5.41s-1.71-.15-2.5-.41l-.69-1.49.64-1.1h5.11l.64 1.11zM14.27 15H9.73l-1.35-4.02L12 8.44l3.63 2.54zm3.79 2.21-1.14-.1-.79-1.37 1.46-4.34 1.39-.47 1 .73c.01.11.02.22.02.34 0 1.99-.73 3.81-1.94 5.21"/>`,
     Mosque: `<path d="M24 7c0-1.1-2-3-2-3s-2 1.9-2 3c0 .74.4 1.38 1 1.72V13h-2v-2c0-.95-.66-1.74-1.55-1.94.34-.58.55-1.25.55-1.97 0-1.31-.65-2.53-1.74-3.25L12 1 7.74 3.84C6.65 4.56 6 5.78 6 7.09c0 .72.21 1.39.55 1.96C5.66 9.26 5 10.05 5 11v2H3V8.72c.6-.34 1-.98 1-1.72 0-1.1-2-3-2-3S0 5.9 0 7c0 .74.4 1.38 1 1.72V21h10v-4c0-.55.45-1 1-1s1 .45 1 1v4h10V8.72c.6-.34 1-.98 1-1.72M8.85 5.5 12 3.4l3.15 2.1c.53.36.85.95.85 1.59C16 8.14 15.14 9 14.09 9H9.91C8.86 9 8 8.14 8 7.09c0-.64.32-1.23.85-1.59M21 19h-6v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2H3v-4h4v-4h10v4h4z"/>`,
     Vihara: `<path d="M21 9.02c0 1.09-.89 1.98-1.98 1.98H18V8.86c1.72-.44 3-1.99 3-3.84V5l-2 .02C19 6.11 18.11 7 17.02 7h-.52L12 1 7.5 7h-.52C5.89 7 5 6.11 5 5.02H3c0 1.86 1.28 3.4 3 3.84V11H4.98C3.89 11 3 10.11 3 9.02H1c0 1.86 1.28 3.4 3 3.84V22h7v-4c0-.55.45-1 1-1s1 .45 1 1v4h7v-9.14c1.72-.44 3-1.99 3-3.84V9zm-9-4.69L14 7h-4zM8 9h8v2H8zm10 11h-3v-2c0-1.65-1.35-3-3-3s-3 1.35-3 3v2H6v-7h12z"/>`,
-    Cemetery: `<path d="M8.66 13.07c.15 0 .29-.01.43-.03C9.56 14.19 10.69 15 12 15s2.44-.81 2.91-1.96c.14.02.29.03.43.03 1.73 0 3.14-1.41 3.14-3.14 0-.71-.25-1.39-.67-1.93.43-.54.67-1.22.67-1.93 0-1.73-1.41-3.14-3.14-3.14-.15 0-.29.01-.43.03C14.44 1.81 13.31 1 12 1s-2.44.81-2.91 1.96c-.14-.02-.29-.03-.43-.03-1.73 0-3.14 1.41-3.14 3.14 0 .71.25 1.39.67 1.93-.43.54-.68 1.22-.68 1.93 0 1.73 1.41 3.14 3.15 3.14M12 13c-.62 0-1.12-.49-1.14-1.1l.12-1.09c.32.12.66.19 1.02.19s.71-.07 1.03-.19l.11 1.09c-.02.61-.52 1.1-1.14 1.1m3.34-1.93c-.24 0-.46-.07-.64-.2l-.81-.57c.55-.45.94-1.09 1.06-1.83l.88.42c.4.19.66.59.66 1.03 0 .64-.52 1.15-1.15 1.15m-.65-5.94c.2-.13.42-.2.65-.2.63 0 1.14.51 1.14 1.14 0 .44-.25.83-.66 1.03l-.88.42c-.12-.74-.51-1.38-1.07-1.83zM12 3c.62 0 1.12.49 1.14 1.1l-.11 1.09C12.71 5.07 12.36 5 12 5s-.7.07-1.02.19l-.12-1.09c.02-.61.52-1.1 1.14-1.1M8.66 4.93c.24 0 .46.07.64.2l.81.56c-.55.45-.94 1.09-1.06 1.83l-.88-.42c-.4-.2-.66-.59-.66-1.03 0-.63.52-1.14 1.15-1.14M8.17 8.9l.88-.42c.12.74.51 1.38 1.07 1.83l-.81.55c-.2.13-.42.2-.65.2-.63 0-1.14-.51-1.14-1.14-.01-.43.25-.82.65-1.02M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9m2.44-2.44c.71-1.9 2.22-3.42 4.12-4.12-.71 1.9-2.22 3.41-4.12 4.12M3 13c0 4.97 4.03 9 9 9 0-4.97-4.03-9-9-9m2.44 2.44c1.9.71 3.42 2.22 4.12 4.12-1.9-.71-3.41-2.22-4.12-4.12"/>`
+    Cemetery: `<path d="M8.66 13.07c.15 0 .29-.01.43-.03C9.56 14.19 10.69 15 12 15s2.44-.81 2.91-1.96c.14.02.29.03.43.03 1.73 0 3.14-1.41 3.14-3.14 0-.71-.25-1.39-.67-1.93.43-.54.67-1.22.67-1.93 0-1.73-1.41-3.14-3.14-3.14-.15 0-.29.01-.43.03C14.44 1.81 13.31 1 12 1s-2.44.81-2.91 1.96c-.14-.02-.29-.03-.43-.03-1.73 0-3.14 1.41-3.14 3.14 0 .71.25 1.39.67 1.93-.43.54-.68 1.22-.68 1.93 0 1.73 1.41 3.14 3.15 3.14M12 13c-.62 0-1.12-.49-1.14-1.1l.12-1.09c.32.12.66.19 1.02.19s.71-.07 1.03-.19l.11 1.09c-.02.61-.52 1.1-1.14 1.1m3.34-1.93c-.24 0-.46-.07-.64-.2l-.81-.57c.55-.45.94-1.09 1.06-1.83l.88.42c.4.19.66.59.66 1.03 0 .64-.52 1.15-1.15 1.15m-.65-5.94c.2-.13.42-.2.65-.2.63 0 1.14.51 1.14 1.14 0 .44-.25.83-.66 1.03l-.88.42c-.12-.74-.51-1.38-1.07-1.83zM12 3c.62 0 1.12.49 1.14 1.1l-.11 1.09C12.71 5.07 12.36 5 12 5s-.7.07-1.02.19l-.12-1.09c.02-.61.52-1.1 1.14-1.1M8.66 4.93c.24 0 .46.07.64.2l.81.56c-.55.45-.94 1.09-1.06 1.83l-.88-.42c-.4-.2-.66-.59-.66-1.03 0-.63.52-1.14 1.15-1.14M8.17 8.9l.88-.42c.12.74.51 1.38 1.07 1.83l-.81.55c-.2.13-.42.2-.65.2-.63 0-1.14-.51-1.14-1.14-.01-.43.25-.82.65-1.02M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9m2.44-2.44c.71-1.9 2.22-3.42 4.12-4.12-.71 1.9-2.22 3.41-4.12 4.12M3 13c0 4.97 4.03 9 9 9 0-4.97-4.03-9-9-9m2.44 2.44c1.9.71 3.42 2.22 4.12 4.12-1.9-.71-3.41-2.22-4.12-4.12"/>`,
+    Flame: `<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>`,
+    BookOpen: `<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zm22 0h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>`,
+    Heart: `<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>`
   };
 
   const pathStr = paths[iconName] || paths['Compass'];
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
       ${pathStr}
     </svg>
   `;
@@ -84,7 +87,7 @@ export default function InteractiveMap() {
   const [categories, setCategories] = useState<MapCategory[]>([]);
   const [pois, setPois] = useState<MapPOI[]>([]);
   const [zones, setZones] = useState<MapZone[]>([]);
-  
+
   // Theme and category selections
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [categoryGeojsons, setCategoryGeojsons] = useState<Record<string, any>>({});
@@ -99,7 +102,7 @@ export default function InteractiveMap() {
 
   // Admin authentication states
   const [user, setUser] = useState<any>(null);
-  
+
   // Modals Open/Close triggers
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false);
@@ -126,7 +129,7 @@ export default function InteractiveMap() {
   // Batas Kelurahan is always visible and cannot be disabled
   const showKelurahanBoundary = true;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const setShowKelurahanBoundary = (_: boolean) => {};
+  const setShowKelurahanBoundary = (_: boolean) => { };
   const [showRWBoundary, setShowRWBoundary] = useState(true);
 
   // Close dropdowns when clicking outside
@@ -237,6 +240,10 @@ export default function InteractiveMap() {
   useEffect(() => {
     (window as any).isDrawingMode = isDrawingActive;
   }, [isDrawingActive]);
+
+  useEffect(() => {
+    (window as any).isMeasuringMode = isMeasuring;
+  }, [isMeasuring]);
 
   // Load GeoJSON layers for active categories from Supabase
   useEffect(() => {
@@ -478,12 +485,12 @@ export default function InteractiveMap() {
     L.geoJSON(geojsonData, {
       filter: (feature: any) => {
         const props = feature.properties || {};
-        
+
         // 1. Sungai (River / Waterway)
         if (props.waterway) {
           return showRiver;
         }
-        
+
         // 2. Jalan (Highway)
         if (props.highway) {
           if (props.highway === 'secondary') {
@@ -491,7 +498,7 @@ export default function InteractiveMap() {
           }
           return showLocalRoad;
         }
-        
+
         // 3. Batas Wilayah (Boundary)
         if (props.boundary === 'administrative' || props.type === 'boundary') {
           if (props.admin_level === '7') {
@@ -501,12 +508,12 @@ export default function InteractiveMap() {
             return showRWBoundary;
           }
         }
-        
+
         return true;
       },
       style: (feature: any) => {
         const props = feature.properties || {};
-        
+
         // 1. Sungai
         if (props.waterway) {
           return {
@@ -517,7 +524,7 @@ export default function InteractiveMap() {
             lineJoin: 'round'
           };
         }
-        
+
         // 2. Jalan
         if (props.highway) {
           if (props.highway === 'secondary') {
@@ -534,7 +541,7 @@ export default function InteractiveMap() {
             opacity: 0.7
           };
         }
-        
+
         // 3. Batas Wilayah
         if (props.boundary === 'administrative' || props.type === 'boundary') {
           if (props.admin_level === '7') {
@@ -556,7 +563,7 @@ export default function InteractiveMap() {
             };
           }
         }
-        
+
         return {
           color: '#9ca3af',
           weight: 1
@@ -654,43 +661,6 @@ export default function InteractiveMap() {
     }
   };
 
-  // Seeding default map data into Supabase
-  const handleImportDefaultData = async () => {
-    if (!user) return;
-    if (!window.confirm('Apakah Anda yakin ingin mengimpor data default? Aksi ini akan menulis ulang kategori, POI, dan wilayah zona asli ke database Supabase Anda.')) return;
-
-    try {
-      // 1. Format categories payload for DB
-      const dbCategories = DEFAULT_CATEGORIES.map(cat => ({
-        id: cat.id,
-        name: cat.name,
-        color: cat.color,
-        marker_color: cat.markerColor,
-        icon: cat.icon,
-        description: cat.description,
-        stats: cat.stats || []
-      }));
-
-      // Upsert categories
-      const { error: catErr } = await supabase.from('categories').upsert(dbCategories);
-      if (catErr) throw catErr;
-
-      // 2. Format POIs (clear specific default IDs to write fresh or upsert)
-      const { error: poiErr } = await supabase.from('pois').upsert(DEFAULT_POIS);
-      if (poiErr) throw poiErr;
-
-      // 3. Insert DEFAULT_ZONES
-      const { error: zoneErr } = await supabase.from('zones').insert(DEFAULT_ZONES);
-      if (zoneErr) throw zoneErr;
-
-      alert('Sukses memuat data default ke Supabase!');
-      fetchMapData();
-    } catch (err: any) {
-      console.error(err);
-      alert('Gagal mengimpor data default: ' + (err.message || err));
-    }
-  };
-
   // Draw Dynamic Zones & POI markers on map updates
   useEffect(() => {
     const map = mapRef.current;
@@ -770,7 +740,7 @@ export default function InteractiveMap() {
           poly.on('popupopen', () => {
             const editBtn = popupDiv.querySelector('.edit-zone-btn');
             const deleteBtn = popupDiv.querySelector('.delete-zone-btn');
-            
+
             if (editBtn) {
               editBtn.addEventListener('click', () => {
                 setZoneToEdit(zone);
@@ -920,7 +890,7 @@ export default function InteractiveMap() {
         L.popup({ closeButton: false, autoClose: false, closeOnClick: false })
           .setLatLng(lastPoint)
           .setContent(`<div class="font-bold text-indigo-600 dark:text-indigo-400 text-xs px-1">Jarak: ${distStr}</div>`)
-          .openOn(map);
+          .addTo(measureGroup);
       }
     }
 
@@ -959,10 +929,6 @@ export default function InteractiveMap() {
   const handleClearMeasure = () => {
     setMeasuredPoints([]);
     setMeasuredDistance(0);
-    const map = mapRef.current;
-    if (map) {
-      map.closePopup();
-    }
   };
 
   const handleLogout = async () => {
@@ -983,7 +949,7 @@ export default function InteractiveMap() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row flex-1 h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 relative">
+    <div className="flex flex-col md:flex-row flex-1 h-full overflow-hidden bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-50 relative">
 
       {/* Sidebar Navigation */}
       <Sidebar
@@ -1018,7 +984,6 @@ export default function InteractiveMap() {
         }}
         onEditCategory={handleOpenEditCategory}
         onDeleteCategory={handleDeleteCategory}
-        onImportDefaultData={handleImportDefaultData}
       />
 
       {/* Main Container */}
@@ -1108,7 +1073,7 @@ export default function InteractiveMap() {
 
         {/* FLOATING MEASUREMENT STATS OVERLAY CARD */}
         {isMeasuring && measuredPoints.length > 0 && (
-          <div className="absolute bottom-20 left-4 z-40 p-4 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-2xl max-w-xs flex flex-col space-y-2 text-xs select-none">
+          <div className="absolute bottom-4 left-4 z-40 p-4 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-2xl max-w-xs flex flex-col space-y-2 text-xs select-none">
             <div className="font-bold text-zinc-900 dark:text-white flex items-center gap-2 text-sm">
               <SquareFootOutlined className="w-4 h-4 text-indigo-600" />
               <span>Detail Jarak Pengukuran</span>
@@ -1146,7 +1111,7 @@ export default function InteractiveMap() {
           setShowRWBoundary={setShowRWBoundary}
           showGeojsonLayer={showGeojsonLayer}
           setShowGeojsonLayer={setShowGeojsonLayer}
-          className={isMeasuring && measuredPoints.length > 0 ? 'bottom-52 left-4' : 'bottom-4 left-4'}
+          className={isMeasuring && measuredPoints.length > 0 ? 'bottom-48 left-4' : 'bottom-4 left-4'}
         />
 
         {/* Desktop floating details card */}

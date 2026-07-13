@@ -7,7 +7,7 @@ import ExploreOutlined from "@mui/icons-material/ExploreOutlined";
 const InteractiveMap = dynamic(() => import("@/components/InteractiveMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans">
+    <div className="h-dvh w-full flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans">
       <div className="flex flex-col items-center gap-5 text-center">
         <div className="p-4 bg-indigo-50 dark:bg-indigo-950/30 rounded-3xl text-indigo-600 dark:text-indigo-400 relative flex items-center justify-center">
           <ExploreOutlined className="w-8 h-8 animate-spin" style={{ animationDuration: '3s' }} />
@@ -27,7 +27,7 @@ const InteractiveMap = dynamic(() => import("@/components/InteractiveMap"), {
 
 export default function Home() {
   return (
-    <main className="w-screen h-screen overflow-hidden flex flex-col">
+    <main className="w-full h-full overflow-hidden flex flex-col">
       <InteractiveMap />
     </main>
   );
