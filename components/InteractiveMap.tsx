@@ -95,6 +95,7 @@ export default function InteractiveMap() {
   const [categoryGeojsons, setCategoryGeojsons] = useState<Record<string, any>>({});
   const [selectedPOI, setSelectedPOI] = useState<MapPOI | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isEmbed, setIsEmbed] = useState(false);
 
   // Dropdown states & refs for mobile accessibility
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
@@ -318,12 +319,19 @@ export default function InteractiveMap() {
 
   // Load theme from localStorage on mount and adjust sidebar for mobile screens
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const embedParam = params.get('embed') === 'true';
+    setIsEmbed(embedParam);
+
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {
       setTheme(savedTheme);
       setBaseLayer(savedTheme === 'dark' ? 'dark' : 'street');
     }
-    if (window.innerWidth < 768) {
+    
+    if (embedParam) {
+      setSidebarOpen(false);
+    } else if (window.innerWidth < 768) {
       setSidebarOpen(false);
     }
   }, []);
@@ -1025,6 +1033,7 @@ export default function InteractiveMap() {
 
         {/* Floating Controls Header */}
         <HeaderControls
+          isEmbed={isEmbed}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           categories={categories}

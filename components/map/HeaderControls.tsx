@@ -6,9 +6,11 @@ import ChevronLeftOutlined from '@mui/icons-material/ChevronLeftOutlined';
 import KeyboardArrowDownOutlined from '@mui/icons-material/KeyboardArrowDownOutlined';
 import SquareFootOutlined from '@mui/icons-material/SquareFootOutlined';
 import LayersOutlined from '@mui/icons-material/LayersOutlined';
+import OpenInNewOutlined from '@mui/icons-material/OpenInNewOutlined';
 import { MapCategory } from '@/data/mapData';
 
 interface HeaderControlsProps {
+  isEmbed?: boolean;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   categories: MapCategory[];
@@ -33,6 +35,7 @@ interface HeaderControlsProps {
 }
 
 export default function HeaderControls({
+  isEmbed = false,
   sidebarOpen,
   setSidebarOpen,
   categories,
@@ -59,13 +62,15 @@ export default function HeaderControls({
     <header className="absolute top-4 left-4 right-4 z-40 flex items-center justify-between gap-3 pointer-events-none select-none">
       {/* Collapse/Reopen Sidebar button */}
       <div className="flex items-center gap-2 pointer-events-auto">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl hover:bg-zinc-50 dark:hover:bg-zinc-855 text-zinc-705 dark:text-zinc-200 flex items-center justify-center transition-all cursor-pointer"
-          title="Toggle Sidebar"
-        >
-          {sidebarOpen ? <ChevronLeftOutlined className="w-5 h-5" /> : <MenuOutlined className="w-5 h-5" />}
-        </button>
+        {!isEmbed && (
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl hover:bg-zinc-50 dark:hover:bg-zinc-855 text-zinc-705 dark:text-zinc-200 flex items-center justify-center transition-all cursor-pointer"
+            title="Toggle Sidebar"
+          >
+            {sidebarOpen ? <ChevronLeftOutlined className="w-5 h-5" /> : <MenuOutlined className="w-5 h-5" />}
+          </button>
+        )}
 
         {/* Current Thematic indicator (when sidebar closed) */}
         {!sidebarOpen && (
@@ -160,6 +165,19 @@ export default function HeaderControls({
 
       {/* Interactive Tools Panel */}
       <div className="flex items-center gap-2 pointer-events-auto">
+        {isEmbed && (
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg flex items-center gap-1.5 text-xs font-bold transition-all cursor-pointer border border-indigo-700"
+            title="Buka Peta Penuh"
+          >
+            <OpenInNewOutlined className="w-4.5 h-4.5" />
+            <span className="hidden sm:inline">Buka Peta Penuh</span>
+          </a>
+        )}
+
         {/* Measuring Tool Toggle */}
         <button
           onClick={() => {
