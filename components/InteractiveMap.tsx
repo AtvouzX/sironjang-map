@@ -1142,6 +1142,7 @@ export default function InteractiveMap() {
 
         {/* FLOATING MAP LEGEND AND FILTER */}
         <Legend
+          isEmbed={isEmbed}
           showRiver={showRiver}
           setShowRiver={setShowRiver}
           showMainRoad={showMainRoad}
@@ -1154,7 +1155,11 @@ export default function InteractiveMap() {
           setShowRWBoundary={setShowRWBoundary}
           showGeojsonLayer={showGeojsonLayer}
           setShowGeojsonLayer={setShowGeojsonLayer}
-          className={isMeasuring && measuredPoints.length > 0 ? 'bottom-48 left-4' : 'bottom-4 left-4'}
+          className={
+            isMeasuring && measuredPoints.length > 0
+              ? (isEmbed ? 'bottom-36 left-1.5 sm:bottom-44 sm:left-3' : 'bottom-48 left-4')
+              : (isEmbed ? 'bottom-1.5 left-1.5 sm:bottom-3 sm:left-3' : 'bottom-4 left-4')
+          }
         />
 
         {/* Desktop floating details card */}
