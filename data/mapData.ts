@@ -39,7 +39,7 @@ export const DEFAULT_CATEGORIES: MapCategory[] = [
     id: 'administrasi',
     name: 'Administrasi',
     color: 'indigo',
-    markerColor: '#6366f1',
+    markerColor: '#609966',
     icon: 'Building2',
     description: 'Peta batas wilayah administratif Kelurahan Pakintelan, Gunungpati, Semarang. Menampilkan kantor kelurahan dan balai pertemuan warga.',
     stats: [

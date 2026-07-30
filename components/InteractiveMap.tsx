@@ -482,10 +482,10 @@ export default function InteractiveMap() {
       if (kelurahanFeature) {
         L.geoJSON(kelurahanFeature, {
           style: () => ({
-            color: '#6366f1',
+            color: '#609966',
             weight: 3,
             dashArray: '3, 6',
-            fillColor: '#6366f1',
+            fillColor: '#609966',
             fillOpacity: 0.03
           })
         }).addTo(geojsonGroup);
@@ -557,10 +557,10 @@ export default function InteractiveMap() {
         if (props.boundary === 'administrative' || props.type === 'boundary') {
           if (props.admin_level === '7') {
             return {
-              color: '#6366f1', // Indigo (Kelurahan Boundary)
+              color: '#609966', // Tema Utama (Kelurahan Boundary)
               weight: 3,
               dashArray: '3, 6',
-              fillColor: '#6366f1',
+              fillColor: '#609966',
               fillOpacity: 0.03
             };
           }
@@ -774,7 +774,7 @@ export default function InteractiveMap() {
     // 3. Draw active POI markers
     filteredPOIs.forEach(poi => {
       const poiCategoryConfig = categories.find(cat => cat.id === poi.category) || categories[0];
-      const activeColor = poiCategoryConfig?.markerColor || '#6366f1';
+      const activeColor = poiCategoryConfig?.markerColor || '#609966';
 
       // HTML div marker pin layout
       const iconHtml = `
@@ -833,7 +833,7 @@ export default function InteractiveMap() {
     // 4. Draw category-specific GeoJSON layers
     Object.entries(categoryGeojsons).forEach(([catId, geojson]) => {
       const cat = categories.find(c => c.id === catId);
-      const color = cat?.markerColor || '#6366f1';
+      const color = cat?.markerColor || '#609966';
 
       L.geoJSON(geojson, {
         filter: (feature: any) => {
@@ -889,7 +889,7 @@ export default function InteractiveMap() {
 
       if (measuredPoints.length > 1) {
         L.polyline(measuredPoints, {
-          color: '#6366f1',
+          color: '#609966',
           weight: 3,
           className: 'measuring-line',
           opacity: 0.9
@@ -920,10 +920,10 @@ export default function InteractiveMap() {
 
       if (drawnCoordinates.length > 1) {
         L.polygon(drawnCoordinates as L.LatLngExpression[], {
-          color: '#6366f1',
+          color: '#609966',
           weight: 2.5,
           dashArray: '5, 8',
-          fillColor: '#6366f1',
+          fillColor: '#609966',
           fillOpacity: 0.12
         }).addTo(measureGroup);
       }

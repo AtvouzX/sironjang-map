@@ -143,7 +143,7 @@ export default function HeaderControls({
                 <div className="space-y-1">
                   {categories.map(cat => {
                     const isChecked = selectedCategories.includes(cat.id);
-                    const activeColor = cat.markerColor || '#6366f1';
+                    const activeColor = cat.markerColor || '#609966';
                     return (
                       <button
                         key={cat.id}

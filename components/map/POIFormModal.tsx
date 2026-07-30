@@ -276,14 +276,17 @@ export default function POIFormModal({
       />
 
       {/* Card */}
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md shadow-2xl p-6 transition-all animate-scale-in scrollbar-thin">
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-hidden rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md shadow-2xl transition-all animate-scale-in flex flex-col">
         {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center"
+          className="absolute top-4 right-4 z-10 p-1.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-white rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center"
         >
           <CloseOutlined className="w-5 h-5" />
         </button>
+
+        {/* Scrollable Container */}
+        <div className="w-full overflow-y-auto p-6 scrollbar-thin flex-1">
 
         {/* Header */}
         <div className="flex items-center gap-2 mb-6 mt-1">
@@ -393,25 +396,27 @@ export default function POIFormModal({
           {/* Icon Selector */}
           <div className="space-y-1">
             <label className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 block">Ikon Pin Lokasi *</label>
-            <div className="grid grid-cols-8 gap-1.5 p-2 bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-h-36 overflow-y-auto scrollbar-thin">
-              {AVAILABLE_ICONS.map((ico) => {
-                const IconComp = ICON_MAP[ico];
-                return (
-                  <button
-                    type="button"
-                    key={ico}
-                    onClick={() => setIcon(ico)}
-                    className={`p-2 rounded-lg flex items-center justify-center transition-all ${
-                      icon === ico
-                        ? 'bg-indigo-600 text-white shadow-md'
-                        : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60'
-                    }`}
-                    title={ico}
-                  >
-                    {IconComp ? <IconComp className="w-4 h-4" /> : null}
-                  </button>
-                );
-              })}
+            <div className="bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden">
+              <div className="grid grid-cols-8 gap-1.5 p-2 max-h-36 overflow-y-auto scrollbar-thin">
+                {AVAILABLE_ICONS.map((ico) => {
+                  const IconComp = ICON_MAP[ico];
+                  return (
+                    <button
+                      type="button"
+                      key={ico}
+                      onClick={() => setIcon(ico)}
+                      className={`p-2 rounded-lg flex items-center justify-center transition-all ${
+                        icon === ico
+                          ? 'bg-indigo-600 text-white shadow-md'
+                          : 'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60'
+                      }`}
+                      title={ico}
+                    >
+                      {IconComp ? <IconComp className="w-4 h-4" /> : null}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-semibold mt-1">
               {(() => { const Ic = ICON_MAP[icon]; return Ic ? <Ic className="w-3.5 h-3.5 text-indigo-500" /> : null; })()}
@@ -508,6 +513,7 @@ export default function POIFormModal({
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -259,7 +259,7 @@ export default function Sidebar({
             {categories.map(cat => {
               const Icon = IconComponents[cat.icon] || ExploreOutlined;
               const isChecked = selectedCategories.includes(cat.id);
-              const activeColor = cat.markerColor || '#6366f1';
+              const activeColor = cat.markerColor || '#609966';
               return (
                 <button
                   key={cat.id}
@@ -299,7 +299,7 @@ export default function Sidebar({
             const cat = categories.find(c => c.id === catId);
             if (!cat) return null;
             const Icon = IconComponents[cat.icon] || ExploreOutlined;
-            const activeColor = cat.markerColor || '#6366f1';
+            const activeColor = cat.markerColor || '#609966';
             return (
               <div key={cat.id} className="p-2.5 sm:p-3 bg-white dark:bg-zinc-800 rounded-xl sm:rounded-2xl border border-zinc-150 dark:border-zinc-700 shadow-sm space-y-1.5 sm:space-y-2 animate-fade-in relative group">
                 <div className="flex items-center justify-between">
@@ -387,7 +387,7 @@ export default function Sidebar({
         ) : (
           filteredPOIs.map(poi => {
             const cat = categories.find(c => c.id === poi.category);
-            const activeColor = cat?.markerColor || '#6366f1';
+            const activeColor = cat?.markerColor || '#609966';
             const PoiIcon = IconComponents[poi.icon || 'MapPin'] || LocationOnOutlined;
             const isSelected = selectedPOI?.id === poi.id;
 

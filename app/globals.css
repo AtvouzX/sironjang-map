@@ -8,6 +8,23 @@
 }
 
 @theme inline {
+  --color-indigo-50: #edf4ee;
+  --color-indigo-55: #e3ebe5;
+  --color-indigo-100: #dbe8dc;
+  --color-indigo-200: #bcd5be;
+  --color-indigo-300: #9dbba0;
+  --color-indigo-400: #7ea282;
+  --color-indigo-500: #609966;
+  --color-indigo-550: #548759;
+  --color-indigo-600: #4d7a52;
+  --color-indigo-650: #436b48;
+  --color-indigo-655: #3f6443;
+  --color-indigo-700: #3a5c3e;
+  --color-indigo-750: #325036;
+  --color-indigo-800: #2a422d;
+  --color-indigo-900: #1d2e1f;
+  --color-indigo-950: #101911;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
